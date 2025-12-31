@@ -1,0 +1,13 @@
+configuration:
+  ma_hostname:
+    name: Music Assistant Hostname
+    description: The external hostname of the music assistant, must be https://.
+  api_username:
+    name: API Username
+    description: The username to be provided by this addon, for connection from Music Assistant.
+  api_password:
+    name: API Password
+    description: The password for the API access, if this is empty it will be generated on first start.
+  aws_default_region:
+    name: AWS Default Region
+    description: AWS default Region for API calls

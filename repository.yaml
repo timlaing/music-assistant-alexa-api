@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository#repository-configuration
+name: Music Assistant Alexa API Addon
+url: 'https://github.com/timlaing/music-assistant-alexa-api'
+maintainer: Tim Laibng <11019084+timlaing@users.noreply.github.com>
