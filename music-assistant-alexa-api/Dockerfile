@@ -13,7 +13,7 @@ RUN \
 
 # Copy root filesystem
 COPY rootfs /
-COPY skill-api/app/lambda/py/src /app/src
+COPY skill-api/app/lambda/py /app/src
 
 
 RUN apk add --update --no-cache \
