@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Music Assistant Alexa API add-on
-version: "1.0.0"
+version: "1.0.1"
 slug: ma_alexa_api
 description: Music Assistant Alexa API add-on
 url: "https://github.com/timlaing/music-assistant-alex-api/tree/main/music-assistant-alex-api"
