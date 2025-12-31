@@ -5,10 +5,8 @@ slug: ma_alexa_api
 description: Music Assistant Alexa API add-on
 url: "https://github.com/timlaing/music-assistant-alex-api/tree/main/music-assistant-alex-api"
 arch:
-  - armhf
   - aarch64
   - amd64
-  - i386
 init: false
 options:
   api_username: "ma-local-alexa-api"

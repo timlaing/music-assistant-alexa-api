@@ -20,7 +20,13 @@
     "vscode": {
       "extensions": [
         "timonwong.shellcheck",
-        "esbenp.prettier-vscode"
+        "esbenp.prettier-vscode",
+        "redhat.vscode-yaml",
+        "github.vscode-github-actions",
+        "sonarsource.sonarlint-vscode",
+        "ms-azuretools.vscode-docker",
+        "coderabbit.coderabbit-vscode",
+        "GitHub.copilot"
       ],
       "settings": {
         "terminal.integrated.profiles.linux": {
@@ -32,12 +38,33 @@
         "editor.formatOnPaste": false,
         "editor.formatOnSave": true,
         "editor.formatOnType": true,
-        "files.trimTrailingWhitespace": true
+        "files.trimTrailingWhitespace": true,
+        "sonarlint.ls.javaHome": "/usr/local/sdkman/candidates/java/current"
       }
     }
   },
   "mounts": [
     "type=volume,target=/var/lib/docker",
-    "type=volume,target=/mnt/supervisor"
-  ]
+    "type=volume,target=/mnt/supervisor",
+    "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind"
+  ],
+  "remoteUser": "vscode",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "latest",
+      "jdkDistro": "open",
+      "gradleVersion": "latest",
+      "mavenVersion": "latest",
+      "antVersion": "latest",
+      "groovyVersion": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts",
+      "pnpmVersion": "latest",
+      "nvmVersion": "latest"
+    }
+  }
 }
