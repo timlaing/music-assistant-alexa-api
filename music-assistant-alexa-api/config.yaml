@@ -17,7 +17,6 @@ schema:
   aws_default_region: "str?"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
 webui: "[PROTO:option_name]://[HOST]:[PORT:5000]/status"
-watchdog: "[PROTO:option_name]://[HOST]:[PORT:5000]/status"
 stage: experimental
 homeassistant: 2025.12.5
 ports:
