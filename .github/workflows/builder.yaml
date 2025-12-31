@@ -72,6 +72,8 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6.0.1
+        with:
+          submodules: recursive
 
       - name: Get information
         id: info

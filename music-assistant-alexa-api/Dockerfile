@@ -1,5 +1,7 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
 # See the documentation for more information
+# This requires the submodule skill-api to be present
+
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
