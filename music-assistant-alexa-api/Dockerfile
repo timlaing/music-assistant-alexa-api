@@ -1,4 +1,5 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
+# See the documentation for more information
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
