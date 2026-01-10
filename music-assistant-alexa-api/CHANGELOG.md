@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.0.3
+
+Fix gunicorn worker issues
+
 ## 1.0.2
 
 Bugfix environment variable

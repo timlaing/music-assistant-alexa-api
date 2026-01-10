@@ -14,6 +14,7 @@ RUN \
 # Copy root filesystem
 COPY rootfs /
 COPY skill-api/app/lambda/py /app/src
+COPY app/src /app/src
 
 # Music Assistant Configuration
 ENV MA_HOSTNAME=""
