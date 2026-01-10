@@ -15,6 +15,9 @@ RUN \
 COPY rootfs /
 COPY skill-api/app/lambda/py /app/src
 
+# Music Assistant Configuration
+ENV MA_HOSTNAME=""
+ENV PORT=5000
 
 RUN apk add --update --no-cache \
     python3\

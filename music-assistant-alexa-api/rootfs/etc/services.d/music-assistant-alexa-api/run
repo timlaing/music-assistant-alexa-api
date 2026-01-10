@@ -6,13 +6,13 @@ set -e
 
 # Declare variables
 declare MA_HOSTNAME
-declare API_PORT
+declare PORT
 declare API_USERNAME
 declare API_PASSWORD
 declare AWS_DEFAULT_REGION
 
 MA_HOSTNAME=$(bashio::config 'ma_hostname' '')
-API_PORT=$(bashio::addon.port '5000')
+PORT=$(bashio::addon.port '5000')
 API_USERNAME=$(bashio::config 'api_username' '')
 API_PASSWORD=$(bashio::config 'api_password' '')
 AWS_DEFAULT_REGION=$(bashio::config 'aws_default_region' 'us-west-1')
@@ -23,13 +23,13 @@ if bashio::config.is_empty "api_password"; then
 fi
 
 bashio::log.info "Hostname: ${MA_HOSTNAME}"
-bashio::log.info "Port: ${API_PORT}"
+bashio::log.info "Port: ${PORT}"
 bashio::log.info "Username: ${API_USERNAME}"
 bashio::log.info "Password: ${API_PASSWORD}"
 bashio::log.info "AWS Region: ${AWS_DEFAULT_REGION}"
 
 export MA_HOSTNAME
-export API_PORT
+export PORT
 export API_USERNAME
 export API_PASSWORD
 export AWS_DEFAULT_REGION
