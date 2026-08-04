@@ -25,10 +25,12 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 | Name | Description | Required |
 | ---- | ----------- | -------- |
 | Music Assistant Hostname | The external hostname, port and root URI to be used for Streams | Y |
+| Alexa Skill Hostname | The public HTTPS endpoint Alexa uses to reach this add-on | N |
 | API Username | The username to be provided to Music Assistant for communication to this API, defaults to (ma-local-alexa-api) | Y |
 | API Password | The password to be provided to Music Assistant for communication to this API, if blank on start one will be generated | N |
 | AWS Default Region | The default region used for communication to AWS, defaults us-east-1. Leave unset unless problems occur | N |
-| Port | The port to be used by the Alexa API, defaults to 5000 | Y |
+| Alexa Skill Locale | The locale used by the skill setup flow, defaults to en-US | N |
+| Skip Stream URL Validation | Skip the external stream reachability check when local network routing prevents it | N |
 
 ### Alexa API
 
@@ -79,7 +81,9 @@ This would make your public URL used by Alexa for the Music Assistant streams to
 
 ## Skill Setup
 
-Manual setup of the Alexa skill is required at the moment, however automated deployment is planned for a future version.
+The add-on includes a guided skill setup flow. Configure `Alexa Skill Hostname`, start the add-on, open its Web UI, and select **Setup**. The setup page guides you through Alexa ASK authorization and creates or updates the skill for the configured locale. ASK credentials are persisted in the add-on data directory.
+
+The manual steps below remain available when you prefer to manage the skill directly in the Alexa Developer Console.
 
 ### Steps
 

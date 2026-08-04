@@ -1,2 +1,2 @@
--r music-assistant-alexa-api/skill-api/app/lambda/py/requirements.txt
+-r music-assistant-alexa-api/skill-api/app/requirements.txt
 gunicorn
