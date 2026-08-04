@@ -6,33 +6,47 @@ set -e
 
 # Declare variables
 declare MA_HOSTNAME
+declare SKILL_HOSTNAME
 declare PORT
-declare API_USERNAME
-declare API_PASSWORD
+declare APP_USERNAME
+declare APP_PASSWORD
 declare AWS_DEFAULT_REGION
+declare LOCALE
+declare SKIP_URL_VALIDATION
 
 MA_HOSTNAME=$(bashio::config 'ma_hostname' '')
+SKILL_HOSTNAME=$(bashio::config 'skill_hostname' '')
 PORT=$(bashio::addon.port '5000')
-API_USERNAME=$(bashio::config 'api_username' '')
-API_PASSWORD=$(bashio::config 'api_password' '')
-AWS_DEFAULT_REGION=$(bashio::config 'aws_default_region' 'us-west-1')
+APP_USERNAME=$(bashio::config 'api_username' '')
+APP_PASSWORD=$(bashio::config 'api_password' '')
+AWS_DEFAULT_REGION=$(bashio::config 'aws_default_region' 'us-east-1')
+LOCALE=$(bashio::config 'locale' 'en-US')
+SKIP_URL_VALIDATION=$(bashio::config 'skip_url_validation' 'false')
 
 if bashio::config.is_empty "api_password"; then
-    API_PASSWORD=$(cat /dev/urandom | tr -dc 'A-Za-z0-9' | head -c 32) || true
-    bashio::addon.option "api_password" "${API_PASSWORD}"
+    APP_PASSWORD=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32) || true
+    bashio::addon.option "api_password" "${APP_PASSWORD}"
 fi
 
 bashio::log.info "Hostname: ${MA_HOSTNAME}"
+bashio::log.info "Skill hostname: ${SKILL_HOSTNAME}"
 bashio::log.info "Port: ${PORT}"
-bashio::log.info "Username: ${API_USERNAME}"
-bashio::log.info "Password: ${API_PASSWORD}"
+bashio::log.info "Username: ${APP_USERNAME}"
 bashio::log.info "AWS Region: ${AWS_DEFAULT_REGION}"
+bashio::log.info "Locale: ${LOCALE}"
+bashio::log.info "Stream URL validation disabled: ${SKIP_URL_VALIDATION}"
 
 export MA_HOSTNAME
+export SKILL_HOSTNAME
 export PORT
-export API_USERNAME
-export API_PASSWORD
+export APP_USERNAME
+export APP_PASSWORD
 export AWS_DEFAULT_REGION
+export LOCALE
+export SKIP_URL_VALIDATION
+export ASK_CREDENTIALS_DIR="/data/.ask"
 
 ## Run your program
-exec /app/venv/bin/gunicorn -w 5 app:app --chdir /app/src/ --reuse-port --bind "0.0.0.0:${PORT}"
+# The upstream application stores the current stream in memory, so it must run
+# as a single worker to keep push and playback requests consistent.
+exec /app/venv/bin/gunicorn --workers 1 app:app --chdir /app/src --bind "0.0.0.0:${PORT}"

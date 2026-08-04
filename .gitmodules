@@ -1,3 +1,5 @@
 [submodule "music-assistant-alexa-api/skill-api"]
 	path = music-assistant-alexa-api/skill-api
 	url = https://github.com/alams154/music-assistant-alexa-skill-prototype.git
+	# Used when updating the submodule with `git submodule update --remote` (gitlink SHA still pins the checked-out revision)
+	branch = master
