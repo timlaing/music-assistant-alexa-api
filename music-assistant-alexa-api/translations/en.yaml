@@ -2,6 +2,9 @@ configuration:
   ma_hostname:
     name: Music Assistant Hostname
     description: The external hostname of the music assistant, must be https://.
+  skill_hostname:
+    name: Alexa Skill Hostname
+    description: The public HTTPS endpoint Alexa uses to reach this add-on.
   api_username:
     name: API Username
     description: The username to be provided by this addon, for connection from Music Assistant.
@@ -11,3 +14,9 @@ configuration:
   aws_default_region:
     name: AWS Default Region
     description: AWS default Region for API calls
+  locale:
+    name: Alexa Skill Locale
+    description: The locale used when creating and updating the Alexa skill.
+  skip_url_validation:
+    name: Skip Stream URL Validation
+    description: Disable the add-on's reachability check for rewritten Music Assistant stream URLs.
