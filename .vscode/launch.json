@@ -11,7 +11,7 @@
             },
             "pathMappings": [
                 {
-                    "localRoot": "${workspaceFolder}/app/lambda/py",
+                    "localRoot": "${workspaceFolder}/music-assistant-alexa-api/skill-api/app",
                     "remoteRoot": "/app/src"
                 }
             ]
@@ -20,17 +20,18 @@
             "name": "Python: Flask Debug",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/music-assistant-alexa-api/skill-api/app/lambda/py/app.py",
+            "program": "${workspaceFolder}/music-assistant-alexa-api/skill-api/app/app.py",
             "console": "integratedTerminal",
-            "cwd": "${workspaceFolder}/music-assistant-alexa-api/skill-api/app/lambda/py",
+            "cwd": "${workspaceFolder}/music-assistant-alexa-api/skill-api/app",
             "env": {
                 "FLASK_APP": "app.py",
                 "FLASK_ENV": "development",
                 "FLASK_DEBUG": "1",
                 "PORT": "5001",
                 "MA_HOSTNAME": "https://ha.laingcorp.co.uk",
-                "API_USERNAME": "ma-local-alexa-api",
-                "API_PASSWORD": "5lgbICHkrwiWQqSVtJyZ8JeuvIOoUap5"
+                "APP_USERNAME": "ma-local-alexa-api",
+                "APP_PASSWORD": "change-me",
+                "LOCALE": "en-US"
             },
             "args": [],
             "jinja": true,
@@ -38,6 +39,6 @@
                 "enable": true
             },
             "redirectOutput": true
-        },
+        }
     ]
 }
