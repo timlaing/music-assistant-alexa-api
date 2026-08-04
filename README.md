@@ -91,7 +91,7 @@ The manual steps below remain available when you prefer to manage the skill dire
 2. Select `Create Skill`
 3. Name & Locale,
     * Skill name: `Music Assistant`
-    * Locale: Leave as default
+    * Locale: Use the configured add-on `locale` value. The default is `en-US`.
 4. Exoerience, Model, Hosting service
     * Experience: Music & Audio
     * Model: Custom

@@ -35,9 +35,9 @@ COPY scripts/patch_python_dependencies.py /tmp/patch_python_dependencies.py
 RUN python3 -m venv venv && \
     . venv/bin/activate && \
     pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir gunicorn -r requirements.txt && \
+    pip install --no-cache-dir gunicorn==26.0.0 -r requirements.txt && \
     python /tmp/patch_python_dependencies.py && \
-    npm install --global ask-cli && \
+    npm install --global ask-cli@2.30.7 && \
     npm cache clean --force && \
     apk del .build-dependencies && \
     rm /tmp/patch_python_dependencies.py
