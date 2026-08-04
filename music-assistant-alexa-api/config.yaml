@@ -1,22 +1,30 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Music Assistant Alexa API add-on
-version: "1.0.3"
+version: "1.1.0"
 slug: ma_alexa_api
 description: Music Assistant Alexa API add-on
-url: "https://github.com/timlaing/music-assistant-alex-api/tree/main/music-assistant-alex-api"
+url: "https://github.com/timlaing/music-assistant-alexa-api/tree/main/music-assistant-alexa-api"
 arch:
   - aarch64
   - amd64
 init: false
 options:
+  ma_hostname: ""
+  skill_hostname: ""
   api_username: "ma-local-alexa-api"
+  aws_default_region: "us-east-1"
+  locale: "en-US"
+  skip_url_validation: false
 schema:
   ma_hostname: "str"
+  skill_hostname: "str?"
   api_username: "str"
   api_password: "password?"
   aws_default_region: "str?"
+  locale: "str"
+  skip_url_validation: "bool"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
-webui: "[PROTO:option_name]://[HOST]:[PORT:5000]/status"
+webui: "http://[HOST]:[PORT:5000]/status"
 stage: experimental
 homeassistant: 2025.12.5
 ports:
