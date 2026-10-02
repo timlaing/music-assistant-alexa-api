@@ -10,20 +10,21 @@ permissions:
 jobs:
   runtime:
     name: Runtime ${{ matrix.arch }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: aarch64
             platform: linux/arm64
+            runner: ubuntu-24.04-arm
           - arch: amd64
             platform: linux/amd64
+            runner: ubuntu-latest
     steps:
       - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-      - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - name: Build pinned image
         env:

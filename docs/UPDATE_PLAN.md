@@ -79,6 +79,13 @@ Independent simultaneous streams remain an upstream limitation outside this rele
 - Actionlint 1.7.12, Python import checks, shell syntax and git whitespace checks
   passed. Separate Runtime Tests now gate the Builder before image publication.
 
+- CI exposed a linter schema that rejects OCI digests even in v2.21.1. The Lint
+  workflow now runs that pinned upstream source with only the image-reference
+  regex extended for strict SHA256 digests; all other checks remain intact.
+- Builder 2026.09.0 deprecates the old action and no longer publishes its builder
+  image. Migrated to its supported build-image action on native ARM64/AMD64
+  runners; retained separate Lint/Builder workflows and runtime gates.
+
 ## Remaining release acceptance
 
 Automated tests use simulated events and mocked MA commands; no live HA, Echo,

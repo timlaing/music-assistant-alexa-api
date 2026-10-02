@@ -1,8 +1,5 @@
 name: Builder
 
-env:
-  BUILD_ARGS: "--test"
-
 on:
   push:
     branches:
@@ -53,69 +50,56 @@ jobs:
 
   build:
     needs: [init, runtime]
-    runs-on: ubuntu-latest
     if: needs.init.outputs.changed == 'true'
-    name: Build ${{ matrix.arch }} ${{ matrix.addon }} add-on
+    name: Build ${{ matrix.arch }} add-on
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        addon: ${{ fromJson(needs.init.outputs.changed_addons) }}
-        arch: ["aarch64", "amd64"]
+        include:
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+          - arch: amd64
+            runner: ubuntu-latest
     permissions:
       contents: read
       packages: write
-
+      id-token: write
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
-
-      - name: Get information
-        id: info
-        uses: home-assistant/actions/helpers/info@master
-        with:
-          path: "./${{ matrix.addon }}"
-
-      - name: Check if add-on should be built
-        id: check
+      - name: Read pinned build settings
+        id: settings
         env:
-          IMAGE: ${{ steps.info.outputs.image }}
-          ARCHITECTURES: ${{ steps.info.outputs.architectures }}
           ARCH: ${{ matrix.arch }}
-          ADDON: ${{ matrix.addon }}
-          HEAD_REF: ${{ github.head_ref }}
-          EVENT_NAME: ${{ github.event_name }}
         run: |
-          if [[ "$IMAGE" == "null" ]]; then
-            echo "Image property is not defined, skipping build"
-            echo "build_arch=false" >> "$GITHUB_OUTPUT"
-          elif [[ "$ARCHITECTURES" =~ $ARCH ]]; then
-            echo "build_arch=true" >> "$GITHUB_OUTPUT"
-            echo "image=$(echo "$IMAGE" | cut -d'/' -f3)" >> "$GITHUB_OUTPUT"
-            if [[ -z "$HEAD_REF" ]] && [[ "$EVENT_NAME" == "push" ]]; then
-              echo "BUILD_ARGS=" >> "$GITHUB_ENV"
-            fi
-          else
-            echo "$ARCH is not a valid arch for $ADDON, skipping build"
-            echo "build_arch=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Login to GitHub Container Registry
-        if: env.BUILD_ARGS != '--test'
-        uses: docker/login-action@v4.6.0
+          ruby -ryaml -e '
+            build = YAML.load_file("music-assistant-alexa-api/build.yaml")
+            config = YAML.load_file("music-assistant-alexa-api/config.yaml")
+            puts "version=#{config["version"]}"
+            puts "base=#{build["build_from"][ENV["ARCH"]]}"
+            puts "tempio=#{build["args"]["TEMPIO_VERSION"]}"
+            puts "labels<<EOF"
+            puts "io.hass.type=addon"
+            puts "io.hass.name=#{config["name"]}"
+            puts "io.hass.description=#{config["description"]}"
+            build["labels"].each { |key, value| puts "#{key}=#{value}" }
+            puts "EOF"
+          ' >> "$GITHUB_OUTPUT"
+      - name: Build and optionally publish add-on
+        uses: home-assistant/builder/actions/build-image@2026.09.0
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build ${{ matrix.addon }} add-on
-        if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@2026.09.0
-        with:
-          args: |
-            ${{ env.BUILD_ARGS }} \
-            --${{ matrix.arch }} \
-            --target /data/${{ matrix.addon }} \
-            --image "${{ steps.check.outputs.image }}" \
-            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
-            --addon
+          arch: ${{ matrix.arch }}
+          context: music-assistant-alexa-api
+          image: ghcr.io/timlaing/${{ matrix.arch }}-addon-ma-alexa-api
+          image-tags: ${{ steps.settings.outputs.version }}
+          version: ${{ steps.settings.outputs.version }}
+          labels: ${{ steps.settings.outputs.labels }}
+          skip-existing: ${{ steps.settings.outputs.version }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+          cosign-base-verify: ${{ steps.settings.outputs.base }}
+          cosign-base-identity: https://github.com/home-assistant/docker-base/.*
+          build-args: |
+            BUILD_FROM=${{ steps.settings.outputs.base }}
+            TEMPIO_VERSION=${{ steps.settings.outputs.tempio }}
