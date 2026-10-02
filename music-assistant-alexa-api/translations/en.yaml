@@ -20,3 +20,12 @@ configuration:
   skip_url_validation:
     name: Skip Stream URL Validation
     description: Disable the add-on's reachability check for rewritten Music Assistant stream URLs.
+  ma_api_url:
+    name: Music Assistant Control API URL
+    description: Optional local Music Assistant server URL for voice controls, typically http://homeassistant:8095. This is separate from the public stream URL.
+  ma_api_token:
+    name: Music Assistant API Token
+    description: Long-lived Music Assistant access token for voice controls.
+  enable_apl:
+    name: Enable Echo Show Display
+    description: Opt in to APL artwork and on-screen controls. Disabled by default for playback stability.

@@ -31,6 +31,9 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 | AWS Default Region | The default region used for communication to AWS, defaults us-east-1. Leave unset unless problems occur | N |
 | Alexa Skill Locale | The locale used by the skill setup flow, defaults to en-US | N |
 | Skip Stream URL Validation | Skip the external stream reachability check when local network routing prevents it | N |
+| Music Assistant Control API URL | Optional local MA API address for mapped voice controls | N |
+| Music Assistant API Token | Access token for the MA control API | N |
+| Enable Echo Show Display | Opt into APL display; defaults to false | N |
 
 ### Alexa API
 
@@ -49,35 +52,46 @@ Assuming you are using the default values adding a custom location with these pa
 
 The endpoint value to provide to the Alexa skill would then be: `https://<your-home-assistant-domain>/ma-alexa-skill/`
 
-### Streams
+### Streams and Nginx Proxy Manager
 
-As discussed above, Alexa needs a public URL that it can recived a Stream, with is returned by a call to the API provided by this add-on.
+Alexa needs public HTTPS access to the skill endpoint and the audio stream.
+Nginx Proxy Manager can provide both. Forward external HTTPS port **443** to
+NPM; keep add-on port **5000** and Music Assistant stream port **8097** internal.
+Direct internet forwarding of those two application ports is unnecessary.
 
-Assuming Music Assistant is configured to use an IP address for the Stream provider setting. (Settings > System > Streams > Advanced settings > Published IP address)
+| Address | NPM upstream | Add-on option |
+| --- | --- | --- |
+| `https://alexa.example.com` | `http://<HA-LAN-IP>:5000` | `skill_hostname` |
+| `https://streams.example.com` | `http://<MA-LAN-IP>:8097` | `ma_hostname` |
 
-This add-on will replace the IP address and Port number with the value provided in the `Music Assistant Hostname` setting.
+Set Music Assistant's Alexa provider **API URL** to `http://<HA-LAN-IP>:5000`
+without `/ma`. Configure its Basic Auth fields with the add-on API credentials.
+This LAN API address is separate from the public skill and stream addresses.
+Use a publicly trusted TLS certificate on NPM. Alexa's public skill endpoint
+must accept signed POST requests without an additional NPM login/access list.
 
-By default Music Assistant will publish the stream on port 8097, with needs to be publicily accessible over https. If you are using NginX Proxy Manager add-on for Home Assistant, this can be also be configured as a custom location(s).
+Existing custom locations also work. For example, `/ma-alexa-skill/` should
+proxy to the add-on root with that prefix stripped. `/flow/`, `/pluginsource/`,
+`/announcement/`, and `/imageproxy/` should proxy to the stream server while
+preserving their paths. A `ma_hostname` path prefix is prepended exactly once
+when rewriting an internal stream URL. Separate proxy hosts simplify setup.
 
-Assuming you are using the default values adding a custom locations with these parameters will work.
+### Optional voice controls and Echo Show display
 
-Flow stream location
-* Location: `/flow/`
-* Scheme: `http`
-* Forward Hostname / IP: `homeassistant`
-* Forward Port: `8097`
+Set `ma_api_url` to the local Music Assistant server API address (normally
+`http://<MA-LAN-IP>:8095`) and `ma_api_token` to a Music Assistant access token.
+These are optional for basic playback, and distinct from the public stream URL.
+Open `/devices`, trigger a skill request from each Echo, and pair its opaque
+Alexa device ID with the actual Music Assistant **player_id**, not its display
+name. Mappings and ASK credentials survive add-on upgrades under `/data`.
 
-Plugin source location
-* Location: `/pluginsource/`
-* Scheme: `http`
-* Forward Hostname / IP: `homeassistant`
-* Forward Port: `8097`
+Next, previous and start-over are routed to the mapped MA player. Pause, stop
+and resume retain upstream's suppression of commands echoed back by MA.
+Set `enable_apl: true` to opt into Echo Show artwork and controls; it defaults
+to false. `skip_url_validation` remains false unless local routing prevents
+this container from checking a stream which the Echo can reach publicly.
 
-The value for `Music Assistant Hostname` would be `https://<your-home-assistant-domain>`.
-
-This would make your public URL used by Alexa for the Music Assistant streams to be:
-* `https://<your-home-assistant-domain>/flow/...`
-* `https://<your-home-assistant-domain>/pluginsource/...`
+See [the update plan](docs/UPDATE_PLAN.md) for findings and validation evidence.
 
 ## Skill Setup
 
@@ -102,82 +116,10 @@ The manual steps below remain available when you prefer to manage the skill dire
 #### Configuration of the Skill
 1) Interaction Model > JSON Editor
 
-Enter the following JSON
-
-```json
-{
-    "interactionModel": {
-        "languageModel": {
-            "invocationName": "music assistant",
-            "intents": [
-                {
-                    "name": "PlayAudio",
-                    "slots": [],
-                    "samples": [
-                        "play",
-                        "start",
-                        "play music assistant",
-                        "play music assistant please",
-                        "start music assistant",
-                        "start music assistant please",
-                        "start the audio",
-                        "start the audio please",
-                        "play the audio",
-                        "play the audio please",
-                        "start the music",
-                        "start the music please",
-                        "play the music",
-                        "play the music please"
-                    ]
-                },
-                {
-                    "name": "AMAZON.PauseIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.ResumeIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.HelpIntent",
-                    "samples": [
-                        "help me please",
-                        "help please",
-                        "what should i do",
-                        "what's next",
-                        "how can I listen to music assistant",
-                        "tell me how to play",
-                        "tell me how to stop",
-                        "tell me how to resume",
-                        "how to stop"
-                    ]
-                },
-                {
-                    "name": "AMAZON.StopIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.CancelIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.StartOverIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.FallbackIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.NavigateHomeIntent",
-                    "samples": []
-                }
-            ],
-            "types": []
-        }
-    }
-}
-```
+Import the current interaction model for your configured locale from
+`music-assistant-alexa-api/skill-api/app/models/<locale>.json` (for example
+`en-GB.json`). This includes the latest playback and voice-control intents.
+Do not reuse the earlier minimal PlayAudio-only model when updating a skill.
 
 2) Assets > Endpoint
     * Type: HTTPS
