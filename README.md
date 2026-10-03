@@ -138,3 +138,7 @@ APL rendering with `enable_apl: true`.
 4) Build History > Build skill
 
 Done 🙂, Your skill should now be live - enjoy.
+
+### Migration release compatibility
+
+Candidate 1.3.0-beta.1 keeps the legacy Supervisor schema with migration-only labels to preserve existing configuration during upgrade. Settings are imported once into `/data/app-settings.json`; all subsequent edits belong in ingress Setup. Later edits to the legacy fields are ignored. The obsolete AWS region option remains removed. Remove this temporary compatibility schema only in a later release once migration is verified.

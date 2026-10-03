@@ -8,6 +8,29 @@ arch:
   - aarch64
   - amd64
 init: false
+# Migration-only compatibility: edit application settings in ingress Setup.
+# Preserve legacy values through the first migration release.
+options:
+  ma_hostname: ""
+  skill_hostname: ""
+  api_username: "ma-local-alexa-api"
+  locale: "en-US"
+  skip_url_validation: false
+  ma_api_url: ""
+  enable_apl: false
+schema:
+  ma_hostname: "str"
+  skill_hostname: "str?"
+  api_username: "str"
+  api_password: "password?"
+  locale: "str"
+  skip_url_validation: "bool"
+  ma_api_url: "str?"
+  ma_api_token: "password?"
+  enable_apl: "bool"
+  lwa_client_id: "str?"
+  lwa_client_secret: "password?"
+  skill_certificate_type: "list(Trusted|Wildcard)?"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
 ingress: true
 ingress_entry: /status

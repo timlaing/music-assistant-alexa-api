@@ -60,3 +60,7 @@ Independent simultaneous streams remain an upstream limitation. See the [update 
 ## Personal skill deployment candidate
 
 Candidate **1.3.0-beta.1** moves application settings into Setup, adds Amazon credentials and certificate selection, derives the callback URL automatically, and removes the unused AWS region setting. Open `/status` and `/setup` through the add-on Web UI in Home Assistant ingress, with no second app login. The private ingress port is 8099; APIs remain on 5000. Set the registered callback to `https://your-public-host/ma-alexa-skill/setup/oauth/callback`, covered by the existing core skill proxy route. No public `/setup` or `/status` locations are required. The status page checks public URL reachability in the background. See the [complete deployment guide](../docs/PERSONAL_SKILL_DEPLOYMENT.md). Live Amazon deployment, Home Assistant ingress and Echo acceptance remain pending.
+
+### Migration release compatibility
+
+Candidate 1.3.0-beta.1 keeps the legacy Supervisor schema with migration-only labels to preserve existing configuration during upgrade. Settings are imported once into `/data/app-settings.json`; all subsequent edits belong in ingress Setup. Later edits to the legacy fields are ignored. The obsolete AWS region option remains removed. Remove this temporary compatibility schema only in a later release once migration is verified.

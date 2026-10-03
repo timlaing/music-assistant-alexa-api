@@ -1,1 +1,49 @@
-configuration: {}
+configuration:
+  ma_hostname:
+    name: Ma Hostname (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  skill_hostname:
+    name: Skill Hostname (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  api_username:
+    name: Api Username (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  api_password:
+    name: Api Password (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  locale:
+    name: Locale (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  skip_url_validation:
+    name: Skip Url Validation (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  ma_api_url:
+    name: Ma Api Url (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  ma_api_token:
+    name: Ma Api Token (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  enable_apl:
+    name: Enable Apl (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  lwa_client_id:
+    name: Lwa Client Id (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  lwa_client_secret:
+    name: Lwa Client Secret (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  skill_certificate_type:
+    name: Skill Certificate Type (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.

@@ -13,8 +13,10 @@ def test_addon_option_contract():
     ]
     assert config["slug"] == "ma_alexa_api"
     assert config["arch"] == ["aarch64", "amd64"]
-    assert config.get("schema", {}) == {}
-    assert config.get("options", {}) == {}
+    assert "aws_default_region" not in config["schema"]
+    assert config["schema"]["api_password"] == "password?"
+    assert config["schema"]["ma_api_token"] == "password?"
+    assert "migration only" in labels["api_password"]["name"]
     assert set(config.get("schema", {})) <= set(labels)
     run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
     assert "PORT=5000" in run and "bashio::addon.port" not in run
@@ -33,7 +35,20 @@ def test_runtime_is_pinned():
 
 def test_personal_deployment_option_and_logging_contract():
     config = yaml.safe_load((ADDON / "config.yaml").read_text())
-    assert config.get("schema", {}) == {}
+    assert set(config["schema"]) == {
+        "skill_certificate_type",
+        "skill_hostname",
+        "api_password",
+        "ma_api_url",
+        "api_username",
+        "enable_apl",
+        "ma_api_token",
+        "ma_hostname",
+        "lwa_client_id",
+        "lwa_client_secret",
+        "locale",
+        "skip_url_validation",
+    }
     assert config["ingress"] and config.get("ingress_port", 8099) == 8099
     assert config["ingress_entry"] == "/status"
     assert "8099/tcp" not in config["ports"]
