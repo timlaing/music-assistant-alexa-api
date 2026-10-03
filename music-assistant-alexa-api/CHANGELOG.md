@@ -1,5 +1,14 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.0-beta.1 (candidate)
+
+- Replace interactive web ASK CLI setup with self-hosted Amazon browser sign-in and direct management APIs.
+- Add explicit existing-skill selection, configuration review and supported package import/build verification.
+- Preserve skill identity, other locales and unrelated resources; prevent automatic deletion and duplicate creation retries.
+- Persist private credentials/progress and resume accepted imports after restart.
+- Add Login with Amazon and certificate options, callback proxy guidance and automated protocol/security tests.
+- Live Amazon deployment and Echo acceptance are still required before promotion.
+
 ## 1.2.0
 
 - Promote the tested beta after maintainer confirmation of real-device playback through NPM.

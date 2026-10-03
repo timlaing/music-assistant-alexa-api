@@ -25,6 +25,10 @@ SKIP_URL_VALIDATION=$(bashio::config 'skip_url_validation' 'false')
 MA_API_URL=$(bashio::config 'ma_api_url' '')
 MA_API_TOKEN=$(bashio::config 'ma_api_token' '')
 ENABLE_APL=$(bashio::config 'enable_apl' 'false')
+LWA_CLIENT_ID=$(bashio::config 'lwa_client_id' '')
+LWA_CLIENT_SECRET=$(bashio::config 'lwa_client_secret' '')
+LWA_REDIRECT_URI=$(bashio::config 'lwa_redirect_uri' '')
+SKILL_CERTIFICATE_TYPE=$(bashio::config 'skill_certificate_type' 'Trusted')
 
 if bashio::config.is_empty "api_password"; then
     APP_PASSWORD=$(tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32) || true
@@ -50,6 +54,8 @@ export SKIP_URL_VALIDATION
 export ASK_CREDENTIALS_DIR="/data/.ask"
 export DEVICE_MAPPING_PATH="/data/device_players.json"
 export MA_API_URL MA_API_TOKEN ENABLE_APL
+export LWA_CLIENT_ID LWA_CLIENT_SECRET LWA_REDIRECT_URI SKILL_CERTIFICATE_TYPE
+export SKILL_DEPLOYMENT_PATH="/data/skill-deployment.json"
 export PYTHONFAULTHANDLER=1
 
 ## Run your program

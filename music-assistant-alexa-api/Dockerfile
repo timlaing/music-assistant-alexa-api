@@ -11,8 +11,8 @@ RUN \
     curl -sSLf -o /usr/bin/tempio \
     "https://github.com/home-assistant/tempio/releases/download/${TEMPIO_VERSION}/tempio_${BUILD_ARCH}"
 
-# Install runtime and build dependencies. The ASK CLI powers the upstream
-# browser-based skill setup flow.
+# Install runtime and build dependencies. Retain ASK CLI for legacy manual
+# administration and fallback status checks; the web wizard uses SMAPI directly.
 RUN apk add --no-cache \
         nodejs=24.18.1-r0 \
         npm=11.12.1-r0 \

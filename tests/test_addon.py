@@ -29,3 +29,23 @@ def test_runtime_is_pinned():
     lines = (ADDON / "requirements.lock").read_text().splitlines()
     assert all("==" in line for line in lines if line and not line.startswith("#"))
     assert "gunicorn==26.2.0" in lines
+
+
+def test_personal_deployment_option_and_logging_contract():
+    config = yaml.safe_load((ADDON / "config.yaml").read_text())
+    assert config["schema"]["lwa_client_secret"] == "password?"
+    assert config["options"]["skill_certificate_type"] == "Trusted"
+    run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
+    for name in (
+        "LWA_CLIENT_ID",
+        "LWA_CLIENT_SECRET",
+        "LWA_REDIRECT_URI",
+        "SKILL_CERTIFICATE_TYPE",
+    ):
+        assert name in run
+    assert "/data/skill-deployment.json" in run
+    log_format = (ADDON / "gunicorn.conf.py").read_text()
+    assert "%(U)s" in log_format and "%(r)s" not in log_format
+    assert (ROOT / "docs/PERSONAL_SKILL_DEPLOYMENT.md").read_bytes() == (
+        ADDON / "skill-api/docs/PERSONAL_SKILL_DEPLOYMENT.md"
+    ).read_bytes()

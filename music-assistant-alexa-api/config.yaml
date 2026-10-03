@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Music Assistant Alexa API add-on
-version: "1.2.0"
+version: "1.3.0-beta.1"
 slug: ma_alexa_api
 description: Music Assistant Alexa API add-on
 url: "https://github.com/timlaing/music-assistant-alexa-api/tree/main/music-assistant-alexa-api"
@@ -17,6 +17,9 @@ options:
   skip_url_validation: false
   ma_api_url: ""
   enable_apl: false
+  lwa_client_id: ""
+  lwa_redirect_uri: ""
+  skill_certificate_type: "Trusted"
 schema:
   ma_hostname: "str"
   skill_hostname: "str?"
@@ -28,6 +31,10 @@ schema:
   ma_api_url: "str?"
   ma_api_token: "password?"
   enable_apl: "bool"
+  lwa_client_id: "str?"
+  lwa_client_secret: "password?"
+  lwa_redirect_uri: "str?"
+  skill_certificate_type: "list(Trusted|Wildcard)"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
 webui: "http://[HOST]:[PORT:5000]/status"
 homeassistant: 2025.12.5

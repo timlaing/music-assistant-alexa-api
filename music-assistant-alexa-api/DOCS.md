@@ -55,3 +55,7 @@ Use `/devices` to map each opaque Alexa device ID to its actual MA `player_id`, 
 Device mappings persist at `/data/device_players.json`, and ASK credentials at `/data/.ask`, across add-on upgrades. `/health` checks process liveness without authentication; status pages and APIs require the configured credentials. An idle state before the first pushed stream is normal.
 
 Independent simultaneous streams remain an upstream limitation. See the [update plan](https://github.com/timlaing/music-assistant-alexa-api/blob/main/docs/UPDATE_PLAN.md) for the validation record and remaining coverage limitations. The add-on container checks do not validate the skill repository's standalone Docker image or bundled development wrapper.
+
+## Personal skill deployment candidate
+
+Candidate **1.3.0-beta.1** adds `lwa_client_id`, `lwa_client_secret`, `lwa_redirect_uri` and `skill_certificate_type`. Set the explicit callback to `https://your-public-host/setup/oauth/callback` and route `/setup` and `/setup/` to port 5000 without stripping paths. Open setup on that public hostname. See the [complete deployment guide](../docs/PERSONAL_SKILL_DEPLOYMENT.md) for one-time registration, existing-skill selection and recovery. Live Amazon deployment and Echo acceptance remain pending; stable 1.2.0 playback confirmation does not cover this feature.

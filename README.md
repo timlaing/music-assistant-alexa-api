@@ -95,7 +95,7 @@ See [the update plan](docs/UPDATE_PLAN.md) for findings and validation evidence.
 
 ## Skill Setup
 
-The add-on includes a guided skill setup flow. Configure `Alexa Skill Hostname`, start the add-on, open its Web UI, and select **Setup**. The setup page guides you through Alexa ASK authorization and creates or updates the skill for the configured locale. ASK credentials are persisted in the add-on data directory.
+Candidate **1.3.0-beta.1** replaces interactive ASK CLI setup with a personal-skill deployment wizard. It requires one-time Login with Amazon security profile registration, then connects Amazon with automatic browser return, explicitly selects your existing skill, reviews settings, imports/builds the voice model and enables development testing. See the [personal skill deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md) for options, NPM `/setup` routing and recovery. Stable **1.2.0** retains the previous setup flow; the candidate still needs live Amazon and Echo acceptance testing.
 
 The manual steps below remain available when you prefer to manage the skill directly in the Alexa Developer Console.
 
