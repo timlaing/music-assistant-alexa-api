@@ -35,6 +35,10 @@ def test_personal_deployment_option_and_logging_contract():
     config = yaml.safe_load((ADDON / "config.yaml").read_text())
     assert config["schema"]["lwa_client_secret"] == "password?"
     assert config["options"]["skill_certificate_type"] == "Trusted"
+    assert config["ingress"] and config.get("ingress_port", 8099) == 8099
+    assert config["ingress_entry"] == "/status"
+    assert "8099/tcp" not in config["ports"]
+    assert "webui" not in config
     run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
     for name in (
         "LWA_CLIENT_ID",

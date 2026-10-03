@@ -36,7 +36,9 @@ schema:
   lwa_redirect_uri: "str?"
   skill_certificate_type: "list(Trusted|Wildcard)"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
-webui: "http://[HOST]:[PORT:5000]/status"
+ingress: true
+ingress_entry: /status
+panel_icon: mdi:music
 homeassistant: 2025.12.5
 ports:
   5000/tcp: 5000

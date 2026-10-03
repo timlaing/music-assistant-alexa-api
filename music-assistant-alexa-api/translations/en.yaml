@@ -37,7 +37,7 @@ configuration:
     description: Private client secret for that Login with Amazon security profile. Never share this value.
   lwa_redirect_uri:
     name: Login with Amazon Callback URL
-    description: Exact registered public HTTPS return URL ending in /setup/oauth/callback. Open setup on this same hostname.
+    description: Exact registered public HTTPS return URL ending in /ma-alexa-skill/setup/oauth/callback. Setup runs in Home Assistant ingress.
   skill_certificate_type:
     name: Alexa Endpoint Certificate Type
     description: Trusted for a normal publicly trusted certificate such as Nginx Proxy Manager Let's Encrypt; Wildcard for a wildcard certificate.

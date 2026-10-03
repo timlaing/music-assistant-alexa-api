@@ -57,8 +57,9 @@ export MA_API_URL MA_API_TOKEN ENABLE_APL
 export LWA_CLIENT_ID LWA_CLIENT_SECRET LWA_REDIRECT_URI SKILL_CERTIFICATE_TYPE
 export SKILL_DEPLOYMENT_PATH="/data/skill-deployment.json"
 export PYTHONFAULTHANDLER=1
+export HA_INGRESS_ENABLED=true
 
 ## Run your program
 # The upstream application stores the current stream in memory, so it must run
 # as a single worker to keep push and playback requests consistent.
-exec /app/venv/bin/gunicorn --config /app/gunicorn.conf.py --workers 1 --worker-class gthread --threads 8 --access-logfile - --error-logfile - --capture-output app:app --chdir /app/src --bind "0.0.0.0:${PORT}"
+exec /app/venv/bin/gunicorn --config /app/gunicorn.conf.py --workers 1 --worker-class gthread --threads 8 --access-logfile - --error-logfile - --capture-output app:app --chdir /app/src --bind "0.0.0.0:${PORT}" --bind "0.0.0.0:8099"

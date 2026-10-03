@@ -2,6 +2,10 @@
 
 ## 1.3.0-beta.1 (candidate)
 
+- Provide status/setup through Home Assistant ingress without a separate app login, preserving API authentication.
+- Keep the Amazon callback under `/ma-alexa-skill/`, completing sign-in in the original ingress browser.
+- Verify configured URL reachability on status with background HTTPS/health/audio checks.
+
 - Replace interactive web ASK CLI setup with self-hosted Amazon browser sign-in and direct management APIs.
 - Add explicit existing-skill selection, configuration review and supported package import/build verification.
 - Preserve skill identity, other locales and unrelated resources; prevent automatic deletion and duplicate creation retries.
