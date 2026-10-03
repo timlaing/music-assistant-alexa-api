@@ -75,3 +75,13 @@ Ingress/diagnostics revision validation: **91 combined tests** passed locally an
 - Container startup revealed that Flask ASK SDK imports a DynamoDB client even though this service does not use it. Keep an internal `us-east-1` compatibility default before importing that SDK; the unused user-facing AWS region option remains removed.
 
 Web-settings validation: **108 combined tests** passed locally and in both ARM64/AMD64 candidate images. Both images passed real HTTP/proxy/playback/concurrency and shutdown checks. A simulated ingress browser saved settings and retained them on reload. Secret masking/retention/removal, stale saves, migration, file permissions, credential updates and deployment edit locking are covered. Real Supervisor upgrade/ingress and Amazon/Echo acceptance remain pending.
+
+## PR review findings (3 October 2026)
+
+- Document all three required Compose secret files; an empty Amazon secret file permits setup later through the wizard.
+- Turn invalid stream rewrite inputs into failed URL diagnostics rather than a polling error, and preserve connected deployment status when current deployment settings are invalid.
+- Keep pending Amazon sign-in when unrelated settings change; invalidate pending sign-in only when the Amazon client/callback configuration changes. Settings edits still invalidate the reviewed deployment.
+- Persist an uncertain-import transition before submitting to Amazon, retaining it after timeouts, interruption and invalid operation responses. Block later deployments until manual reconciliation when the operation ID is unavailable; a valid saved operation ID still supports normal resume.
+- Resume revalidates the saved vendor and development custom skill against the current Amazon connection before polling or enabling testing. An unrelated developer account cannot resume the saved operation. This binds recovery to a verified ownership context, not a newly introduced Amazon identity API.
+
+Review-fix validation: **125 combined tests** passed locally and in ARM64/AMD64 candidate images, together with HTTP/proxy/playback/concurrency, certificate-registry and shutdown checks. New regressions cover invalid URL polling, connected status with invalid settings, OAuth-preserving edits, durable lost/invalid/interrupted import responses, definite rejection and recovery ownership. Review changes remain on the existing paired draft PRs; real Supervisor/Amazon/Echo acceptance remains pending.
