@@ -44,6 +44,21 @@ jobs:
             build["labels"].each { |key, value| puts "#{key}=#{value}" }
             puts "EOF"
           ' >> "$GITHUB_OUTPUT"
+      # The builder only verifies base signatures when publishing. Run the
+      # same strict check on PRs too, before allowing the build to pass.
+      - name: Install Cosign for PR base verification
+        if: ${{ !inputs.publish }}
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: v3.0.6
+      - name: Verify base image for PR build
+        if: ${{ !inputs.publish }}
+        uses: home-assistant/builder/actions/cosign-verify@4de35182ce1e329181bffcbcc84d33db5e2c7e10 # 2026.06.0
+        with:
+          image: ${{ steps.settings.outputs.base }}
+          cosign-identity: https://github.com/home-assistant/docker-base/.*
+          cosign-issuer: https://token.actions.githubusercontent.com
+          allow-failure: false
       - name: Build and optionally publish add-on
         uses: home-assistant/builder/actions/build-image@2026.09.0
         with:
