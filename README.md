@@ -65,6 +65,15 @@ proxy to the add-on root with that prefix stripped. `/flow/`, `/pluginsource/`,
 preserving their paths. In the 1.2.0 candidate, a `ma_hostname` path prefix is prepended exactly once
 when rewriting an internal stream URL. Separate proxy hosts simplify setup.
 
+If Music Assistant connects directly to the add-on LAN API URL above, no NPM locations are needed for `/alexa/` or `/ma/`. If it connects through a shared public hostname instead, set its Alexa provider **API URL** to that hostname's base URL (for example, `https://music.example.com`, without `/ma` or `/ma-alexa-skill`) and add these NPM custom locations:
+
+| Location | Forward to | Path handling |
+| --- | --- | --- |
+| `/alexa/` | `http://<HA-LAN-IP>:5000` | Preserve `/alexa/`, including `/alexa/intents`. |
+| `/ma/` | `http://<HA-LAN-IP>:5000` | Preserve `/ma/`, including `/ma/push-url`. |
+
+Use the add-on's API username and password in Music Assistant's Basic Auth fields; avoid an additional NPM authentication layer on these API locations. These locations reach the add-on API, not the MA stream server on 8097 or the optional control API on 8095. A dedicated proxy host forwarding all paths to the add-on on 5000 already covers them and needs no custom API locations.
+
 ### Optional voice controls and Echo Show display
 
 In the 1.2.0 candidate, set `ma_api_url` to the local Music Assistant server API address (normally
