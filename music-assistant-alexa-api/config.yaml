@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Music Assistant Alexa API add-on
-version: "1.2.0-beta.1"
+version: "1.2.0"
 slug: ma_alexa_api
 description: Music Assistant Alexa API add-on
 url: "https://github.com/timlaing/music-assistant-alexa-api/tree/main/music-assistant-alexa-api"
@@ -30,7 +30,6 @@ schema:
   enable_apl: "bool"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
 webui: "http://[HOST]:[PORT:5000]/status"
-stage: experimental
 homeassistant: 2025.12.5
 ports:
   5000/tcp: 5000

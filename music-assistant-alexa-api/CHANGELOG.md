@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.2.0
+
+- Promote the tested beta after maintainer confirmation of real-device playback through NPM.
+- Verify signed base image indexes before publication and in PR builds.
+- Document shared-host `/alexa/` and `/ma/` API proxy routing.
+
 ## 1.2.0-beta.1
 
 - Update to latest upstream via the maintained Alexa skill fork.

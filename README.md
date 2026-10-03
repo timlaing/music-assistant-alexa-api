@@ -2,7 +2,7 @@
 
 This repository packages the [Music Assistant Alexa skill service](https://github.com/timlaing/music-assistant-alexa-skill) as a maintained Home Assistant Supervisor add-on. Install this repository for Home Assistant; use the skill repository for application development or standalone Docker deployment.
 
-The experimental **1.2.0-beta.1** candidate is tracked in [PR #28](https://github.com/timlaing/music-assistant-alexa-api/pull/28), with application fixes in [skill PR #1](https://github.com/timlaing/music-assistant-alexa-skill/pull/1). It passed 46 combined tests and HTTP/concurrency/shutdown checks in ARM64 and AMD64 add-on containers, plus CI lint, CodeQL and image builds. Live Home Assistant/Echo/NPM acceptance remains required before stable release. Candidate-only options and behavior below require that version; an open PR does not make the candidate a published release.
+Stable **1.2.0** includes the merged [add-on fixes](https://github.com/timlaing/music-assistant-alexa-api/pull/28), [skill fixes](https://github.com/timlaing/music-assistant-alexa-skill/pull/1) and [publication repair](https://github.com/timlaing/music-assistant-alexa-api/pull/29). The maintainer confirmed playback works on a real Alexa device with the Nginx Proxy Manager configuration on 3 October 2026. Automated validation passed 46 combined tests and HTTP/concurrency/shutdown checks in ARM64 and AMD64 containers, plus lint, CodeQL and image builds. This confirmation covers the tested installation; it does not establish compatibility with every device or validate every optional feature.
 
 [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https://github.com/timlaing/music-assistant-alexa-api)
 
@@ -33,9 +33,9 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 | AWS Default Region | The default region used for communication to AWS, defaults us-east-1. Leave unset unless problems occur | N |
 | Alexa Skill Locale | The locale used by the skill setup flow, defaults to en-US | N |
 | Skip Stream URL Validation | Skip the external stream reachability check when local network routing prevents it | N |
-| Music Assistant Control API URL | Candidate: optional local MA API address for mapped voice controls | N |
-| Music Assistant API Token | Candidate: access token for the MA control API | N |
-| Enable Echo Show Display | Candidate: opt into APL display; defaults to false | N |
+| Music Assistant Control API URL | optional local MA API address for mapped voice controls | N |
+| Music Assistant API Token | access token for the MA control API | N |
+| Enable Echo Show Display | opt into APL display; defaults to false | N |
 
 ### Alexa API
 
@@ -62,7 +62,7 @@ must accept signed POST requests without an additional NPM login/access list.
 For existing custom locations, `/ma-alexa-skill/` must
 proxy to the add-on root with that prefix stripped. `/flow/`, `/pluginsource/`,
 `/announcement/`, and `/imageproxy/` should proxy to the stream server while
-preserving their paths. In the 1.2.0 candidate, a `ma_hostname` path prefix is prepended exactly once
+preserving their paths. In 1.2.0, a `ma_hostname` path prefix is prepended exactly once
 when rewriting an internal stream URL. Separate proxy hosts simplify setup.
 
 If Music Assistant connects directly to the add-on LAN API URL above, no NPM locations are needed for `/alexa/` or `/ma/`. If it connects through a shared public hostname instead, set its Alexa provider **API URL** to that hostname's base URL (for example, `https://music.example.com`, without `/ma` or `/ma-alexa-skill`) and add these NPM custom locations:
@@ -76,7 +76,7 @@ Use the add-on's API username and password in Music Assistant's Basic Auth field
 
 ### Optional voice controls and Echo Show display
 
-In the 1.2.0 candidate, set `ma_api_url` to the local Music Assistant server API address (normally
+In 1.2.0, set `ma_api_url` to the local Music Assistant server API address (normally
 `http://<MA-LAN-IP>:8095`) and `ma_api_token` to a Music Assistant access token.
 These are optional for basic playback, and distinct from the public stream URL.
 Open `/devices`, trigger a skill request from each Echo, and pair its opaque

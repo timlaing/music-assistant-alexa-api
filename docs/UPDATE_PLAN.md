@@ -120,7 +120,7 @@ Independent simultaneous streams remain an upstream limitation outside this rele
 
 Automated tests use simulated events and mocked MA commands; no live HA, Echo,
 Amazon certificate fetch or deployed NPM/router test was available in this run.
-Before stable release, install the beta on HA with MA 2.10.5 and check:
+The original beta acceptance checklist below remains useful for broader coverage; the maintainer confirmation does not establish every item or an exact MA version:
 
 - Existing options and ASK credentials survive restart/update; device mappings persist.
 - Separate NPM HTTPS hosts reach the skill and streams; verify a real signed Alexa
@@ -131,8 +131,7 @@ Before stable release, install the beta on HA with MA 2.10.5 and check:
 - APL opt-in behaves correctly on a supported Echo and concurrent screenless device.
 - Observe logs/fault diagnostics for issue 23, whose original crash was not reproduced.
 
-This is an experimental `1.2.0-beta.1` candidate. Stable publication remains gated
-on the above hardware acceptance.
+The maintainer confirmed real-device playback through NPM on 3 October 2026 and requested stable 1.2.0 promotion. The broader checklist above remains coverage work, not a claim that every scenario was tested.
 
 ## Documentation consistency follow-up (3 October 2026)
 
@@ -141,7 +140,10 @@ on `docs/home-assistant-addon` updates README, manual setup, compatibility,
 limitations and the bundled wrapper's README to direct Supervisor users to the
 maintained add-on repository. The add-on README/DOCS use matching public HTTPS
 routing, lowercase Supervisor options, optional MA control credentials, player-ID
-mapping, persistence paths and APL defaults. The 1.2.0-beta.1 features are explicitly
-candidate-only, with automated validation distinguished from live acceptance.
+mapping, persistence paths and APL defaults. These features are available in stable 1.2.0; documentation distinguishes automated validation and maintainer-confirmed playback from broader optional-feature coverage.
 The historical upstream-wrapper finding above does not describe the maintained
 Home Assistant add-on's current packaging or test results.
+
+## Stable 1.2.0 promotion (3 October 2026)
+
+The maintainer confirmed the NPM configuration works on a real Alexa device and requested promotion to non-beta 1.2.0. Update version and add-on stage to stable, synchronize both repositories, and record this confirmation on the related issues. Device model, exact MA version, APL, every mapped control and the original issue 23 crash are not individually confirmed. Keep issues 9 and 23 open for their outstanding verification. Confirm both stable images are published after the main push.
