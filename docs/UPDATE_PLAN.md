@@ -10,7 +10,10 @@ the runtime base image is unchanged. Both index signatures verified against
 the Home Assistant docker-base identity and GitHub Actions OIDC issuer, and
 the digest-aware add-on linter passed. Keep strict signature verification.
 Publication and anonymous registry availability must be confirmed after this
-repair reaches main before Home Assistant users retry the update.
+repair reaches main before Home Assistant users retry the update. Review
+follow-up verified both pins with the publisher's exact Cosign 3.0.6 flags;
+PR image builds now run the same strict verification before building, rather
+than leaving that check exclusive to publication.
 
 ## Verified baseline and upstream findings (2 October 2026)
 
