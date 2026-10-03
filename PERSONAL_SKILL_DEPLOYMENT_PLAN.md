@@ -1,0 +1,102 @@
+# Automate personal Alexa skill setup
+
+Status: Implementation in progress on `codex/personal-skill-deployment` in both repositories. Candidate 1.3.0-beta.1; live Amazon/Echo acceptance remains pending.
+
+## Summary
+
+Extend the existing web app to create or update your personal Music Assistant skill, fill in its Amazon configuration, build its voice model, and enable development testing.
+
+Use the chosen self-hosted sign-in approach. One initial Amazon login application registration is required; subsequent setup uses browser sign-in with automatic return. See [Amazon authorization requirements](https://developer.amazon.com/en-US/docs/alexa/smapi/get-access-token-smapi.html) and [registered callback requirements](https://www.developer.amazon.com/docs/login-with-amazon/dynamically-redirect-users.html).
+
+## Implementation
+
+- Add a guided setup: connect Amazon → select your existing skill or create one → review settings → deploy → verify completion.
+- Use Amazon’s management APIs directly for deployment, replacing the web flow’s interactive command-line process.
+- Update the selected skill by its saved ID. Never delete skills automatically or select one solely by name.
+- Generate the endpoint, locale, voice model, AudioPlayer interface, optional APL interface, and certificate setting from the configured installation.
+- Persist credentials, selected skill ID, and deployment progress under `/data`. Allow safe retries and report interrupted deployments after restart.
+- Report success only after Amazon confirms the configuration, model build, and development enablement.
+
+## Sign-in and interfaces
+
+- Add settings for the Amazon login client ID, secret, and explicit public HTTPS callback URL.
+- Add authorization start and callback routes, plus deployment start and status routes under `/setup`.
+- Provide status/setup through Home Assistant ingress without a second app login; retain app authentication for the APIs and standalone deployments. Protect deployment controls with browser CSRF validation. Validate short-lived, single-use authorization state; keep credentials and codes out of logs.
+- Use the configured callback address behind Nginx Proxy Manager. Keep tokens on your installation and support refresh and reconnection.
+- Preserve the existing personal skill’s identity and unrelated configuration when updating it.
+
+## Testing and documentation
+
+- Test creating a skill, updating an existing skill, repeated deployment, duplicate names, failed builds, expired credentials, rejected callbacks, and restart recovery.
+- Verify locale, APL, certificate settings, and HTTPS proxy compatibility.
+- Run the existing regression suite and both supported container architectures.
+- Complete a live Amazon deployment and Echo playback check before claiming full acceptance.
+- Update both repositories’ setup instructions and this plan document, distinguishing one-time login registration from automated skill configuration.
+
+## Defaults
+
+- Development-stage personal skill; no publication or certification.
+- Keep the configured locale and APL preference.
+- Existing skills require explicit selection before the first update.
+- Public HTTPS skill and audio endpoints remain required; Nginx Proxy Manager can provide them.
+- Sign implementation commits with GitHub GPG key `C1E29FB983ECFB1A541B19BE152E7550E4916458`.
+
+## Implementation findings and progress (3 October 2026)
+
+- The old web setup spawned ASK CLI authorization, accepted pasted codes and could select/delete skills by name. The new web routes replace that flow entirely; manual CLI scripts are no longer called by the wizard.
+- Amazon now marks direct interaction-model update APIs as unsupported and recommends [Skill Package Management](https://www.developer.amazon.com/en-US/docs/alexa/smapi/skill-package-api-reference.html). The implementation exports existing packages, preserves unrelated members/locales, and imports the reviewed package using Amazon's presigned storage URL. Creation uses the manifest API first so the skill ID can be persisted before import.
+- Existing invocation names are preserved. The chosen locale's bundled intents/slots are deliberately replaced and clearly disclosed during review. Default and existing regional endpoints are updated together.
+- Configuration includes explicit HTTPS callback and certificate type; status/setup use Home Assistant ingress on private port 8099. The public callback is `/ma-alexa-skill/setup/oauth/callback` and uses the existing core skill proxy route. No public status/setup proxy locations are required. Proxy access logs must omit callback query strings too.
+- Tokens and package/job state are persisted privately under `/data`; the app supports refresh, single-use browser-bound OAuth state, CSRF-protected controls, interrupted imports and uncertain-create duplicate prevention.
+- Changes made in Amazon between review and deployment are detected by a canonical exported-package comparison. Amazon confirmation requires successful package import, manifest/model builds, matching exported package and development enablement.
+- The existing playback/status regression suite remains green. Additional API fixtures cover creation/redeployment, duplicate names, retained resources, failures, expired credentials, callback rejection, restart recovery and settings validation. All **80 combined tests** passed locally and in both ARM64 and AMD64 candidate images. HTTP/proxy, playback, concurrency, certificate-registry and graceful shutdown checks passed in both images. The add-on linter and new module/test static checks passed. A browser check completed review and deployment with simulated Amazon responses and no JavaScript errors; live acceptance remains pending.
+
+## Remaining acceptance gate
+
+A real Amazon account must complete the one-time security-profile registration and sign-in, deploy an existing personal skill, repeat the update without changing its ID, exercise restart/resume and verify Echo playback. Existing stable-1.2.0 device confirmation does not validate these new APIs. Do not merge/promote this candidate until live acceptance passes.
+
+## Ingress and status revision
+
+- User requested `/status` and `/setup` without app authentication and through Home Assistant ingress. Added a private 8099 listener restricted to the raw Supervisor peer; forwarded headers cannot bypass this boundary. Ingress prefixes are retained in links, polling and browser cookies. API traffic remains on 5000 with its existing credentials.
+- User requested the callback under the existing `/ma-alexa-skill/` route. The callback now accepts the OAuth return there, while connection completion requires the original ingress browser's cookie and CSRF token. Home Assistant itself need not be externally accessible.
+- Status now checks public skill health, HTTPS stream-host connectivity and the current rewritten audio URL in a background cache, reporting TLS/DNS/timeouts/HTTP errors. Results describe add-on-side reachability; Echo acceptance remains necessary.
+
+Ingress/diagnostics revision validation: **91 combined tests** passed locally and in both ARM64/AMD64 candidate images, including gateway spoofing rejection, ingress cookie paths, callback replay/original-browser completion, HTTPS failure diagnostics and caching. Add-on lint passed. Browser status→setup navigation and simulated deployment worked through the ingress prefix. Actual Home Assistant, Amazon and Echo acceptance remain pending.
+
+## Web settings follow-up (3 October 2026)
+
+- Move all 13 useful settings into the ingress setup page; generate the callback URL from the public skill origin instead of maintaining a separate editable value. Put API credentials, certificate selection and troubleshooting controls under Advanced.
+- Remove the unused AWS region setting from the maintained add-on and application deployment examples.
+- Store settings atomically with owner-only permissions in `/data/app-settings.json`. Import available legacy add-on options/environment values once, preserve web edits across restarts, and retain standalone environment bootstrap support.
+- Keep secrets masked, retain them for blank inputs, provide explicit optional-secret removal and deliberate API-password reveal. Generate the initial add-on API password once.
+- Apply playback/control settings on subsequent requests; never deploy merely because settings were saved. Block edits during a deployment, invalidate old reviews and pending sign-in, and reject stale browser saves.
+- Validate persistence, migration, request authentication, callback derivation, secret handling and playback regressions; live Supervisor upgrade and Amazon acceptance remain pending.
+
+- Container startup revealed that Flask ASK SDK imports a DynamoDB client even though this service does not use it. Keep an internal `us-east-1` compatibility default before importing that SDK; the unused user-facing AWS region option remains removed.
+
+Web-settings validation: **108 combined tests** passed locally and in both ARM64/AMD64 candidate images. Both images passed real HTTP/proxy/playback/concurrency and shutdown checks. A simulated ingress browser saved settings and retained them on reload. Secret masking/retention/removal, stale saves, migration, file permissions, credential updates and deployment edit locking are covered. Real Supervisor upgrade/ingress and Amazon/Echo acceptance remain pending.
+
+## PR review findings (3 October 2026)
+
+- Document all three required Compose secret files; an empty Amazon secret file permits setup later through the wizard.
+- Turn invalid stream rewrite inputs into failed URL diagnostics rather than a polling error, and preserve connected deployment status when current deployment settings are invalid.
+- Keep pending Amazon sign-in when unrelated settings change; invalidate pending sign-in only when the Amazon client/callback configuration changes. Settings edits still invalidate the reviewed deployment.
+- Persist an uncertain-import transition before submitting to Amazon, retaining it after timeouts, interruption and invalid operation responses. Block later deployments until manual reconciliation when the operation ID is unavailable; a valid saved operation ID still supports normal resume.
+- Resume revalidates the saved vendor and development custom skill against the current Amazon connection before polling or enabling testing. An unrelated developer account cannot resume the saved operation. This binds recovery to a verified ownership context, not a newly introduced Amazon identity API.
+
+Review-fix validation: **125 combined tests** passed locally and in ARM64/AMD64 candidate images, together with HTTP/proxy/playback/concurrency, certificate-registry and shutdown checks. New regressions cover invalid URL polling, connected status with invalid settings, OAuth-preserving edits, durable lost/invalid/interrupted import responses, definite rejection and recovery ownership. Review changes remain on the existing paired draft PRs; real Supervisor/Amazon/Echo acceptance remains pending.
+
+## Follow-up review findings (4 October 2026)
+
+- Add a protected owner action for uncertain imports: require the exact saved skill/attempt, explicit Amazon-confirmed terminal result and confirmation reference, revalidate the saved ownership context, and atomically persist an audit record before clearing uncertainty. Never equate owner confirmation with API-verified deployment or permit clearing merely because no local job is busy.
+- Retain a temporary legacy Supervisor schema with migration-only labels for the first migration release so upgrade values survive until startup import. Web settings remain authoritative after migration; the obsolete AWS region option stays removed. Plan schema removal for a later release after verified migrations.
+- The add-on plaintext-management comment targets an old pin: current ingress mode denies setup/status on 5000 even with Basic Auth and spoofed forwarded headers; private 8099 trusts only the raw Supervisor peer. Existing regression checks cover this boundary.
+
+Follow-up validation: **140 combined tests** passed locally and in ARM64/AMD64 images with real HTTP/proxy/playback/concurrency, certificate and shutdown checks. Add-on metadata lint passed. A simulated ingress browser recorded a confirmed non-acceptance and required a fresh review. Tests cover terminal result validation, CSRF/authentication, stale attempts, ownership, active jobs, legacy state migration and failed persistence retaining both retry blocks. Live Supervisor migration and Amazon/Echo acceptance remain pending.
+
+### Reconciliation concurrency review (4 October 2026)
+
+- Snapshot the uncertain attempt and Amazon connection under the manager lock, then release it while checking ownership. Reacquire it and reject changes to attempt, skill, vendor, credentials, job state or shutdown before recording confirmation. Slow Amazon listing no longer holds status/settings behind that manager lock.
+- Add deterministic concurrent status/settings tests and stale-attempt/ownership/connection checks. Add-on PR #30 was approved on its prior head; the synchronized pointer requires review of this follow-up.
+
+Concurrency follow-up validation: **150 combined tests** passed locally and in ARM64/AMD64 images, including real HTTP/proxy/playback/concurrency, certificate and shutdown checks. Ruff and whitespace checks passed. Live Supervisor migration and Amazon/Echo acceptance remain pending.

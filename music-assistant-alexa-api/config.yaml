@@ -1,6 +1,6 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
 name: Music Assistant Alexa API add-on
-version: "1.2.0"
+version: "1.3.0-beta.1"
 slug: ma_alexa_api
 description: Music Assistant Alexa API add-on
 url: "https://github.com/timlaing/music-assistant-alexa-api/tree/main/music-assistant-alexa-api"
@@ -8,11 +8,12 @@ arch:
   - aarch64
   - amd64
 init: false
+# Migration-only compatibility: edit application settings in ingress Setup.
+# Preserve legacy values through the first migration release.
 options:
   ma_hostname: ""
   skill_hostname: ""
   api_username: "ma-local-alexa-api"
-  aws_default_region: "us-east-1"
   locale: "en-US"
   skip_url_validation: false
   ma_api_url: ""
@@ -22,14 +23,18 @@ schema:
   skill_hostname: "str?"
   api_username: "str"
   api_password: "password?"
-  aws_default_region: "str?"
   locale: "str"
   skip_url_validation: "bool"
   ma_api_url: "str?"
   ma_api_token: "password?"
   enable_apl: "bool"
+  lwa_client_id: "str?"
+  lwa_client_secret: "password?"
+  skill_certificate_type: "list(Trusted|Wildcard)?"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
-webui: "http://[HOST]:[PORT:5000]/status"
+ingress: true
+ingress_entry: /status
+panel_icon: mdi:music
 homeassistant: 2025.12.5
 ports:
   5000/tcp: 5000

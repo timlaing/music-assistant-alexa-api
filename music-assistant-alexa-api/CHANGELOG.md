@@ -1,5 +1,22 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.0-beta.1 (candidate)
+
+- Move application settings into the ingress setup page, migrate available legacy values and persist web edits.
+- Generate the callback URL and initial API password; mask secrets and provide deliberate provider-password reveal.
+- Remove the unused AWS region configuration.
+
+- Provide status/setup through Home Assistant ingress without a separate app login, preserving API authentication.
+- Keep the Amazon callback under `/ma-alexa-skill/`, completing sign-in in the original ingress browser.
+- Verify configured URL reachability on status with background HTTPS/health/audio checks.
+
+- Replace interactive web ASK CLI setup with self-hosted Amazon browser sign-in and direct management APIs.
+- Add explicit existing-skill selection, configuration review and supported package import/build verification.
+- Preserve skill identity, other locales and unrelated resources; prevent automatic deletion and duplicate creation retries.
+- Persist private credentials/progress and resume accepted imports after restart.
+- Add Login with Amazon and certificate options, callback proxy guidance and automated protocol/security tests.
+- Live Amazon deployment and Echo acceptance are still required before promotion.
+
 ## 1.2.0
 
 - Promote the tested beta after maintainer confirmation of real-device playback through NPM.
