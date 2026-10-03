@@ -118,3 +118,15 @@ Before stable release, install the beta on HA with MA 2.10.5 and check:
 
 This is an experimental `1.2.0-beta.1` candidate. Stable publication remains gated
 on the above hardware acceptance.
+
+## Documentation consistency follow-up (3 October 2026)
+
+[Skill documentation PR #2](https://github.com/timlaing/music-assistant-alexa-skill/pull/2)
+on `docs/home-assistant-addon` updates README, manual setup, compatibility,
+limitations and the bundled wrapper's README to direct Supervisor users to the
+maintained add-on repository. The add-on README/DOCS use matching public HTTPS
+routing, lowercase Supervisor options, optional MA control credentials, player-ID
+mapping, persistence paths and APL defaults. The 1.2.0-beta.1 features are explicitly
+candidate-only, with automated validation distinguished from live acceptance.
+The historical upstream-wrapper finding above does not describe the maintained
+Home Assistant add-on's current packaging or test results.
