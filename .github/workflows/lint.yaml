@@ -1,5 +1,8 @@
 name: Lint
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -19,6 +22,8 @@ jobs:
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: 🔍 Find add-on directories
         id: addons
@@ -34,8 +39,22 @@ jobs:
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v7.0.1
-
-      - name: 🚀 Run Home Assistant Add-on Lint
-        uses: frenck/action-addon-linter@v2.21
         with:
-          path: "./${{ matrix.path }}"
+          persist-credentials: false
+
+      # v2.21.1 still rejects valid digest references. Extend only that regex;
+      # run every other upstream schema and semantic check unchanged.
+      - name: Check out pinned add-on linter
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+          repository: frenck/action-addon-linter
+          ref: b9cfd1bc62ba60d2c4fc96317b5f7ada5923f4a7 # v2.21.1
+          path: .addon-linter
+      - name: Run digest-aware Home Assistant Add-on Lint
+        env:
+          ADDON_PATH: ${{ matrix.path }}
+        run: |
+          python3 scripts/allow_digest_images.py .addon-linter/src/build.schema.json
+          docker build -t addon-linter .addon-linter/src
+          docker run --rm -v "$PWD:/github/workspace:ro" -e INPUT_PATH="/github/workspace/$ADDON_PATH" -e INPUT_COMMUNITY=false addon-linter

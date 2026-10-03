@@ -1,8 +1,7 @@
 name: Builder
 
-env:
-  BUILD_ARGS: "--test"
-  MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs scripts skill-api"
+permissions:
+  contents: read
 
 on:
   push:
@@ -22,98 +21,53 @@ jobs:
     steps:
       - name: Check out the repository
         uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
 
-      - name: Get changed files
-        id: changed_files
-        uses: jitterbit/get-changed-files@v1
-
-      - name: Find add-on directories
-        id: addons
-        uses: home-assistant/actions/helpers/find-addons@master
-
-      - name: Get changed add-ons
+      - name: Select changed add-on
         id: changed_addons
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
         run: |
-          declare -a changed_addons
-          for addon in ${{ steps.addons.outputs.addons }}; do
-            if [[ "${{ steps.changed_files.outputs.all }}" =~ $addon ]]; then
-              for file in ${{ env.MONITORED_FILES }}; do
-                  if [[ "${{ steps.changed_files.outputs.all }}" =~ $addon/$file ]]; then
-                    if [[ ! "${changed_addons[@]}" =~ $addon ]]; then
-                      changed_addons+=("\"${addon}\",");
-                    fi
-                  fi
-              done
-            fi
-          done
-
-          changed=$(echo ${changed_addons[@]} | rev | cut -c 2- | rev)
-
-          if [[ -n ${changed} ]]; then
-            echo "Changed add-ons: $changed";
-            echo "changed=true" >> $GITHUB_OUTPUT;
-            echo "addons=[$changed]" >> $GITHUB_OUTPUT;
+          if [[ -z "$BASE_SHA" || "$BASE_SHA" =~ ^0+$ ]]; then
+            files=$(git ls-files)
           else
-            echo "No add-on had any monitored files changed (${{ env.MONITORED_FILES }})";
+            files=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA")
           fi
-  build:
+          changed=false
+          while IFS= read -r file; do
+            case "$file" in
+              music-assistant-alexa-api/.dockerignore|music-assistant-alexa-api/build.yaml|music-assistant-alexa-api/config.yaml|music-assistant-alexa-api/Dockerfile|music-assistant-alexa-api/requirements.lock|music-assistant-alexa-api/gunicorn.conf.py|music-assistant-alexa-api/rootfs/*|music-assistant-alexa-api/scripts/*|music-assistant-alexa-api/skill-api|tests/*|scripts/*|.github/workflows/*|requirements-test.txt|requirements_all.txt)
+                changed=true ;;
+            esac
+          done <<< "$files"
+          echo "changed=$changed" >> "$GITHUB_OUTPUT"
+          echo 'addons=["music-assistant-alexa-api"]' >> "$GITHUB_OUTPUT"
+  runtime:
     needs: init
-    runs-on: ubuntu-latest
     if: needs.init.outputs.changed == 'true'
-    name: Build ${{ matrix.arch }} ${{ matrix.addon }} add-on
-    strategy:
-      matrix:
-        addon: ${{ fromJson(needs.init.outputs.changed_addons) }}
-        arch: ["aarch64", "amd64"]
+    uses: ./.github/workflows/runtime.yaml
+    permissions:
+      contents: read
+
+  build:
+    needs: [init, runtime]
+    if: needs.init.outputs.changed == 'true' && github.event_name == 'pull_request'
+    uses: ./.github/workflows/image.yaml
+    permissions:
+      contents: read
+    with:
+      publish: false
+
+  publish:
+    needs: [init, runtime]
+    if: needs.init.outputs.changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/image.yaml
     permissions:
       contents: read
       packages: write
-
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v7.0.1
-        with:
-          submodules: recursive
-
-      - name: Get information
-        id: info
-        uses: home-assistant/actions/helpers/info@master
-        with:
-          path: "./${{ matrix.addon }}"
-
-      - name: Check if add-on should be built
-        id: check
-        run: |
-          if [[ "${{ steps.info.outputs.image }}" == "null" ]]; then
-            echo "Image property is not defined, skipping build"
-            echo "build_arch=false" >> $GITHUB_OUTPUT;
-          elif [[ "${{ steps.info.outputs.architectures }}" =~ ${{ matrix.arch }} ]]; then
-            echo "build_arch=true" >> $GITHUB_OUTPUT;
-            echo "image=$(echo ${{ steps.info.outputs.image }} | cut -d'/' -f3)" >> $GITHUB_OUTPUT;
-            if [[ -z "${{ github.head_ref }}" ]] && [[ "${{ github.event_name }}" == "push" ]]; then
-                echo "BUILD_ARGS=" >> $GITHUB_ENV;
-            fi
-          else
-            echo "${{ matrix.arch }} is not a valid arch for ${{ matrix.addon }}, skipping build";
-            echo "build_arch=false" >> $GITHUB_OUTPUT;
-          fi
-
-      - name: Login to GitHub Container Registry
-        if: env.BUILD_ARGS != '--test'
-        uses: docker/login-action@v4.6.0
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build ${{ matrix.addon }} add-on
-        if: steps.check.outputs.build_arch == 'true'
-        uses: home-assistant/builder@2026.06.0
-        with:
-          args: |
-            ${{ env.BUILD_ARGS }} \
-            --${{ matrix.arch }} \
-            --target /data/${{ matrix.addon }} \
-            --image "${{ steps.check.outputs.image }}" \
-            --docker-hub "ghcr.io/${{ github.repository_owner }}" \
-            --addon
+      id-token: write
+    with:
+      publish: true

@@ -1,8 +1,17 @@
 """Apply compatibility fixes required by the upstream Alexa SDK stack."""
 
+from importlib.metadata import version
 from pathlib import Path
 from sysconfig import get_paths
 
+for package, expected in (
+    ("ask-sdk-webservice-support", "1.3.3"),
+    ("certvalidator", "0.11.1"),
+):
+    if version(package) != expected:
+        raise RuntimeError(
+            f"Review compatibility patch for {package} {version(package)}"
+        )
 
 SITE_PACKAGES = Path(get_paths()["purelib"])
 
@@ -11,13 +20,14 @@ def patch_file(relative_path: str, old: str, new: str) -> None:
     """Replace an exact dependency code block when the installed version needs it."""
     path = SITE_PACKAGES / relative_path
     if not path.exists():
-        print(f"Dependency patch skipped; {path} was not installed")
-        return
+        raise RuntimeError(f"Required dependency missing: {path}")
 
     source = path.read_text(encoding="utf-8")
     if old not in source:
-        print(f"Dependency patch not needed for {path}")
-        return
+        if new in source:
+            print(f"Dependency already patched: {path}")
+            return
+        raise RuntimeError(f"Required compatibility patch did not match: {path}")
 
     path.write_text(source.replace(old, new), encoding="utf-8")
     print(f"Patched {path}")

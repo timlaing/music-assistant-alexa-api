@@ -1,0 +1,64 @@
+name: Build Image
+
+on:
+  workflow_call:
+    inputs:
+      publish:
+        description: Publish and sign versioned images after a main-branch push
+        required: true
+        type: boolean
+
+# Inherit the caller's permissions: PR builds have contents: read only;
+# only the main-branch publisher grants packages: write and id-token: write.
+jobs:
+  image:
+    name: Build ${{ matrix.arch }} add-on
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+          - arch: amd64
+            runner: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Read pinned build settings
+        id: settings
+        env:
+          ARCH: ${{ matrix.arch }}
+        run: |
+          ruby -ryaml -e '
+            build = YAML.load_file("music-assistant-alexa-api/build.yaml")
+            config = YAML.load_file("music-assistant-alexa-api/config.yaml")
+            puts "version=#{config["version"]}"
+            puts "base=#{build["build_from"][ENV["ARCH"]]}"
+            puts "tempio=#{build["args"]["TEMPIO_VERSION"]}"
+            puts "labels<<EOF"
+            puts "io.hass.type=addon"
+            puts "io.hass.name=#{config["name"]}"
+            puts "io.hass.description=#{config["description"]}"
+            build["labels"].each { |key, value| puts "#{key}=#{value}" }
+            puts "EOF"
+          ' >> "$GITHUB_OUTPUT"
+      - name: Build and optionally publish add-on
+        uses: home-assistant/builder/actions/build-image@2026.09.0
+        with:
+          arch: ${{ matrix.arch }}
+          context: music-assistant-alexa-api
+          image: ghcr.io/timlaing/${{ matrix.arch }}-addon-ma-alexa-api
+          image-tags: ${{ steps.settings.outputs.version }}
+          version: ${{ steps.settings.outputs.version }}
+          labels: ${{ steps.settings.outputs.labels }}
+          skip-existing: ${{ steps.settings.outputs.version }}
+          push: ${{ inputs.publish }}
+          cosign: ${{ inputs.publish }}
+          container-registry-password: ${{ inputs.publish && secrets.GITHUB_TOKEN || '' }}
+          cosign-base-verify: ${{ steps.settings.outputs.base }}
+          cosign-base-identity: https://github.com/home-assistant/docker-base/.*
+          build-args: |
+            BUILD_FROM=${{ steps.settings.outputs.base }}
+            TEMPIO_VERSION=${{ steps.settings.outputs.tempio }}

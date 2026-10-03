@@ -1,2 +1,1 @@
--r music-assistant-alexa-api/skill-api/app/requirements.txt
-gunicorn==26.0.0
+-r music-assistant-alexa-api/requirements.lock
