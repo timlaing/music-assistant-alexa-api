@@ -1,5 +1,8 @@
 name: Lint
 
+permissions:
+  contents: read
+
 on:
   push:
     branches:
@@ -19,6 +22,8 @@ jobs:
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       - name: 🔍 Find add-on directories
         id: addons
@@ -34,12 +39,15 @@ jobs:
     steps:
       - name: ⤵️ Check out code from GitHub
         uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
 
       # v2.21.1 still rejects valid digest references. Extend only that regex;
       # run every other upstream schema and semantic check unchanged.
       - name: Check out pinned add-on linter
         uses: actions/checkout@v7.0.1
         with:
+          persist-credentials: false
           repository: frenck/action-addon-linter
           ref: b9cfd1bc62ba60d2c4fc96317b5f7ada5923f4a7 # v2.21.1
           path: .addon-linter

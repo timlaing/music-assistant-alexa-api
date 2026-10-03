@@ -48,7 +48,9 @@ isolation; push-to-play metadata integrity; URL prefix/encoding/artwork behavior
 queue completion, announcements, live radio, pause/resume, next/previous/start-over
 and echo suppression; mapping persistence and absent/invalid MA credentials.
 Build/run amd64 and aarch64 and explicitly test NPM-style forwarded requests.
-Target current MA stable 2.10.5. Live device tests remain a release gate.
+Target MA stable [2.10.5](https://github.com/music-assistant/server/releases/tag/2.10.5),
+released 2 October 2026 at 11:48 UTC (reverified 3 October against the official
+release metadata). Live device tests remain a release gate.
 Independent simultaneous streams remain an upstream limitation outside this release.
 
 ## Execution evidence
@@ -85,6 +87,19 @@ Independent simultaneous streams remain an upstream limitation outside this rele
 - Builder 2026.09.0 deprecates the old action and no longer publishes its builder
   image. Migrated to its supported build-image action on native ARM64/AMD64
   runners; retained separate Lint/Builder workflows and runtime gates.
+
+## PR review findings (3 October 2026)
+
+- Added root requirements_all.txt and the add-on .dockerignore to build-change
+  detection; changes to either now trigger runtime tests and builds.
+- Disabled checkout credential persistence in Builder, Runtime Tests and Lint;
+  initialization and lint default to contents: read.
+- Split read-only PR image builds from main-branch publication. Only the publisher
+  grants packages: write/OIDC and supplies the registry token to the builder.
+- Kept MA 2.10.5 as the hardware acceptance target: the review's 2.10.4 claim was
+  stale, as the official stable release was published before the original plan.
+- Dependency PRs 25/26 contain no actionable inline review comments. Their version
+  updates are incorporated in PR 28; they remain open pending the beta update.
 
 ## Remaining release acceptance
 
