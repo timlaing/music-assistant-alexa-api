@@ -93,3 +93,10 @@ Review-fix validation: **125 combined tests** passed locally and in ARM64/AMD64 
 - The add-on plaintext-management comment targets an old pin: current ingress mode denies setup/status on 5000 even with Basic Auth and spoofed forwarded headers; private 8099 trusts only the raw Supervisor peer. Existing regression checks cover this boundary.
 
 Follow-up validation: **140 combined tests** passed locally and in ARM64/AMD64 images with real HTTP/proxy/playback/concurrency, certificate and shutdown checks. Add-on metadata lint passed. A simulated ingress browser recorded a confirmed non-acceptance and required a fresh review. Tests cover terminal result validation, CSRF/authentication, stale attempts, ownership, active jobs, legacy state migration and failed persistence retaining both retry blocks. Live Supervisor migration and Amazon/Echo acceptance remain pending.
+
+### Reconciliation concurrency review (4 October 2026)
+
+- Snapshot the uncertain attempt and Amazon connection under the manager lock, then release it while checking ownership. Reacquire it and reject changes to attempt, skill, vendor, credentials, job state or shutdown before recording confirmation. Slow Amazon listing no longer holds status/settings behind that manager lock.
+- Add deterministic concurrent status/settings tests and stale-attempt/ownership/connection checks. Add-on PR #30 was approved on its prior head; the synchronized pointer requires review of this follow-up.
+
+Concurrency follow-up validation: **150 combined tests** passed locally and in ARM64/AMD64 images, including real HTTP/proxy/playback/concurrency, certificate and shutdown checks. Ruff and whitespace checks passed. Live Supervisor migration and Amazon/Echo acceptance remain pending.
