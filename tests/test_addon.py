@@ -13,9 +13,9 @@ def test_addon_option_contract():
     ]
     assert config["slug"] == "ma_alexa_api"
     assert config["arch"] == ["aarch64", "amd64"]
-    assert config["schema"]["ma_api_token"] == "password?"
-    assert config["options"]["enable_apl"] is False
-    assert set(config["schema"]) <= set(labels)
+    assert config.get("schema", {}) == {}
+    assert config.get("options", {}) == {}
+    assert set(config.get("schema", {})) <= set(labels)
     run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
     assert "PORT=5000" in run and "bashio::addon.port" not in run
     assert "--workers 1 --worker-class gthread --threads 8" in run
@@ -33,20 +33,15 @@ def test_runtime_is_pinned():
 
 def test_personal_deployment_option_and_logging_contract():
     config = yaml.safe_load((ADDON / "config.yaml").read_text())
-    assert config["schema"]["lwa_client_secret"] == "password?"
-    assert config["options"]["skill_certificate_type"] == "Trusted"
+    assert config.get("schema", {}) == {}
     assert config["ingress"] and config.get("ingress_port", 8099) == 8099
     assert config["ingress_entry"] == "/status"
     assert "8099/tcp" not in config["ports"]
     assert "webui" not in config
     run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
-    for name in (
-        "LWA_CLIENT_ID",
-        "LWA_CLIENT_SECRET",
-        "LWA_REDIRECT_URI",
-        "SKILL_CERTIFICATE_TYPE",
-    ):
-        assert name in run
+    assert "/data/app-settings.json" in run
+    assert "bashio::config" not in run
+    assert "AWS_DEFAULT_REGION" not in run
     assert "/data/skill-deployment.json" in run
     log_format = (ADDON / "gunicorn.conf.py").read_text()
     assert "%(U)s" in log_format and "%(r)s" not in log_format

@@ -2,6 +2,10 @@
 
 ## 1.3.0-beta.1 (candidate)
 
+- Move application settings into the ingress setup page, migrate available legacy values and persist web edits.
+- Generate the callback URL and initial API password; mask secrets and provide deliberate provider-password reveal.
+- Remove the unused AWS region configuration.
+
 - Provide status/setup through Home Assistant ingress without a separate app login, preserving API authentication.
 - Keep the Amazon callback under `/ma-alexa-skill/`, completing sign-in in the original ingress browser.
 - Verify configured URL reachability on status with background HTTPS/health/audio checks.

@@ -8,18 +8,22 @@ The web app creates or updates your **personal development skill** under your ow
 
 1. Use the Amazon developer account associated with your Echo devices. Register a **Login with Amazon security profile** following [Amazon's SMAPI access-token guide](https://developer.amazon.com/en-US/docs/alexa/smapi/get-access-token-smapi.html).
 2. Under the profile's **Web Settings**, register an **Allowed Return URL** of `https://alexa.example.com/ma-alexa-skill/setup/oauth/callback`, replacing the hostname with your public proxy hostname. The entire URL must match, including the path; use HTTPS on public port 443.
-3. Copy the client ID and client secret into your installation's options. This registration remains a manual prerequisite. The wizard handles the skill's developer-console configuration afterwards.
+3. Copy the client ID and client secret into **Setup → Application settings**. This registration remains a manual prerequisite. The wizard handles the skill's developer-console configuration afterwards.
 
-| Home Assistant option | Standalone environment variable | Value |
+| Setup setting | Standalone bootstrap variable | Value |
 |---|---|---|
 | `lwa_client_id` | `LWA_CLIENT_ID` | Your security profile's client ID |
 | `lwa_client_secret` | `LWA_CLIENT_SECRET` | The private client secret; never share it |
-| `lwa_redirect_uri` | `LWA_REDIRECT_URI` | Exact registered `https://…/ma-alexa-skill/setup/oauth/callback` URL |
+| Callback URL (read only) | Derived from `SKILL_HOSTNAME` | Origin of the skill URL plus `/ma-alexa-skill/setup/oauth/callback`; copy it into Amazon registration |
 | `skill_hostname` | `SKILL_HOSTNAME` | Full public HTTPS skill endpoint, including any proxy prefix |
 | `skill_certificate_type` | `SKILL_CERTIFICATE_TYPE` | `Trusted` for a normal NPM Let's Encrypt certificate; `Wildcard` for a wildcard certificate |
 | `locale` | `LOCALE` | Echo's locale, matching a bundled voice model, such as `en-GB` |
 | `enable_apl` | `ENABLE_APL` | Optional Echo Show display, disabled by default |
 | `api_username` / `api_password` | `APP_USERNAME` / `APP_PASSWORD` | Playback/control API credentials; ingress pages use Home Assistant authentication |
+
+All application settings are edited on Setup. API credentials, certificate type and skip-validation are under **Advanced settings**. Secrets are masked; a blank input retains the saved value, with explicit removal for the optional MA token and Amazon secret. **Show current API password** reveals only the provider password after a deliberate action, so it can be copied into Music Assistant. Saving updates local playback/control settings immediately; it never deploys to Amazon. API credential changes require updating Music Assistant. Reconnect Amazon after changing client credentials, and prepare a fresh review after any settings change. Saving is blocked while deployment work is active.
+
+Settings persist in owner-only `/data/app-settings.json` (override with `APP_SETTINGS_PATH`). Available legacy add-on options and environment values are imported once on add-on startup; the saved file takes precedence thereafter. Back up existing settings before upgrading, especially if Supervisor has removed old options before migration can read them. Standalone environments remain bootstrap defaults until the first web save. AWS region configuration is removed from the app.
 
 Standalone secrets may be supplied through mounted files using the environment-secret convention already used by the app. Persist `/data`, or set `SKILL_DEPLOYMENT_PATH` to a file in another persistent private volume. Existing ASK CLI credentials are not reused because they belong to a different OAuth client. Legacy CLI files may remain for manual administration.
 
@@ -41,7 +45,7 @@ Checks run in the background, with short timeouts and a one-minute cache, so the
 
 ## Deploy your existing skill
 
-1. Restart after saving the options and open the add-on Web UI through Home Assistant ingress, then select **Setup**. There is no second app login.
+1. Open the add-on Web UI through Home Assistant ingress, select **Setup**, fill in **Application settings** and save. There is no second app login or restart required. Copy the generated callback into your Amazon security profile.
 2. Select **Connect Amazon**. Approve the requested skill/model management access. Amazon returns through the callback under `/ma-alexa-skill/`, and the ingress wizard finishes automatically; there is no code to copy.
 3. Choose the developer account and your **existing personal skill**. The skill ID is shown to distinguish identical names. Only custom skills in development are listed. For a fresh installation, explicitly choose **Create a new personal skill** instead.
 4. Select **Review settings**. The app exports the selected skill and prepares a package preserving other locales, permissions and unrelated files. The selected locale's voice model is replaced with the bundled Music Assistant model, while its existing invocation name is retained. A new English skill uses “music assistant”; new non-English skills retain the bundled locale's invocation name. Your endpoint replaces the default and any regional endpoints. AudioPlayer is enabled and the APL setting is applied.

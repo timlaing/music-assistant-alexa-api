@@ -24,13 +24,16 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 
 ### Settings
 
+For candidate **1.3.0-beta.1**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; stable **1.2.0** still uses the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md). API credentials and troubleshooting controls are under **Advanced settings**.
+
+Existing values are imported once from available legacy `/data/options.json` values and environment variables into `/data/app-settings.json`; later saves and restarts use that file. Secrets stay masked, with an explicit **Show current API password** action for connecting Music Assistant. Saving applies locally without deploying to Amazon. The unused AWS region option is removed. Persist and protect `/data` backups.
+
 | Name | Description | Required |
 | ---- | ----------- | -------- |
 | Music Assistant Hostname | The external hostname, port and root URI to be used for Streams | Y |
 | Alexa Skill Hostname | The public HTTPS endpoint Alexa uses to reach this add-on; required for guided setup | N |
 | API Username | The username to be provided to Music Assistant for communication to this API, defaults to (ma-local-alexa-api) | Y |
 | API Password | The password to be provided to Music Assistant for communication to this API, if blank on start one will be generated | N |
-| AWS Default Region | The default region used for communication to AWS, defaults us-east-1. Leave unset unless problems occur | N |
 | Alexa Skill Locale | The locale used by the skill setup flow, defaults to en-US | N |
 | Skip Stream URL Validation | Skip the external stream reachability check when local network routing prevents it | N |
 | Music Assistant Control API URL | optional local MA API address for mapped voice controls | N |
@@ -48,7 +51,7 @@ Nginx Proxy Manager can provide both. Forward external HTTPS port **443** to
 NPM; keep add-on port **5000** and Music Assistant stream port **8097** internal.
 Direct internet forwarding of those two application ports is unnecessary.
 
-| Address | NPM upstream | Add-on option |
+| Address | NPM upstream | Setup setting |
 | --- | --- | --- |
 | `https://alexa.example.com` | `http://<HA-LAN-IP>:5000` | `skill_hostname` |
 | `https://streams.example.com` | `http://<MA-LAN-IP>:8097` | `ma_hostname` |

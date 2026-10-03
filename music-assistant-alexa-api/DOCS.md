@@ -6,14 +6,16 @@ Stable **1.2.0** includes the merged [add-on fixes](https://github.com/timlaing/
 
 ## How to use
 
-1. Configure `ma_hostname` and `skill_hostname` with the public HTTPS stream and skill URLs described below.
-2. Set the API credentials and `locale` (default `en-US`), start the add-on and open its Web UI.
+1. Open **Web UI → Setup** and configure `ma_hostname` and `skill_hostname` with the public HTTPS stream and skill URLs described below.
+2. Save the API credentials and `locale` (default `en-US`); use **Show current API password** to copy the generated password into Music Assistant.
 3. Select **Setup** for guided Alexa authorization and skill/model creation or update. The manual alternative is described in the [repository README](https://github.com/timlaing/music-assistant-alexa-api#skill-setup).
 4. In Music Assistant's Alexa provider, set **API URL** to the add-on LAN base URL, such as `http://<HA-LAN-IP>:5000`, without `/ma`, and provide the add-on Basic Auth credentials.
 
-Supervisor uses the lowercase options below; uppercase environment variables in the skill's standalone Docker guide are not Supervisor option names.
+For candidate **1.3.0-beta.1**, these are settings on **Web UI → Setup**, rather than Supervisor options. Stable **1.2.0** retains its Configuration tab. Start the candidate, open the Web UI through ingress and save the application settings before connecting Amazon. API credentials and troubleshooting controls are under **Advanced settings**.
 
 ## Configuration
+
+Candidate settings persist privately in `/data/app-settings.json`. On first start, available legacy add-on options and environment values are imported once; subsequent web edits take precedence after restarts. Secrets are masked and blank secret inputs retain existing values. Explicit removal is available for the optional MA token and Amazon secret. Changing API credentials requires updating Music Assistant; changing Amazon credentials requires reconnecting. Saving never deploys to Amazon.
 
 | Option | Description |
 | --- | --- |
@@ -21,7 +23,6 @@ Supervisor uses the lowercase options below; uppercase environment variables in 
 | `skill_hostname` | Public HTTPS endpoint Alexa uses to reach the skill. Required for guided setup. |
 | `api_username` | API username. Defaults to `ma-local-alexa-api`. |
 | `api_password` | API password. A random value is generated and saved when left empty. |
-| `aws_default_region` | ASK CLI region. Defaults to `us-east-1`. |
 | `locale` | Alexa locale used by guided setup. Defaults to `en-US`. |
 | `skip_url_validation` | Defaults to false. Skip only the server-side stream reachability check when local routing prevents it; Alexa still needs public HTTPS access. |
 | `ma_api_url` | optional local MA control API URL, normally `http://<MA-LAN-IP>:8095`. Unnecessary for basic playback. |
@@ -52,10 +53,10 @@ Use the add-on's API username and password in Music Assistant's Basic Auth field
 
 Use `/devices` to map each opaque Alexa device ID to its actual MA `player_id`, rather than the player display name. With optional MA control credentials, next, previous and start-over route to MA. Pause, stop and resume also synchronize mapped players, while retaining Alexa AudioPlayer handling and one-shot suppression of commands echoed back by MA.
 
-Device mappings persist at `/data/device_players.json`, and ASK credentials at `/data/.ask`, across add-on upgrades. `/health` checks process liveness without authentication; status pages and APIs require the configured credentials. An idle state before the first pushed stream is normal.
+Device mappings persist at `/data/device_players.json`, and ASK credentials at `/data/.ask`, across add-on upgrades. `/health` checks process liveness without authentication; candidate status/setup pages use Home Assistant ingress without a second login; playback APIs retain the configured credentials. An idle state before the first pushed stream is normal.
 
 Independent simultaneous streams remain an upstream limitation. See the [update plan](https://github.com/timlaing/music-assistant-alexa-api/blob/main/docs/UPDATE_PLAN.md) for the validation record and remaining coverage limitations. The add-on container checks do not validate the skill repository's standalone Docker image or bundled development wrapper.
 
 ## Personal skill deployment candidate
 
-Candidate **1.3.0-beta.1** adds `lwa_client_id`, `lwa_client_secret`, `lwa_redirect_uri` and `skill_certificate_type`. Open `/status` and `/setup` through the add-on Web UI in Home Assistant ingress, with no second app login. The private ingress port is 8099; APIs remain on 5000. Set the registered callback to `https://your-public-host/ma-alexa-skill/setup/oauth/callback`, covered by the existing core skill proxy route. No public `/setup` or `/status` locations are required. The status page checks public URL reachability in the background. See the [complete deployment guide](../docs/PERSONAL_SKILL_DEPLOYMENT.md). Live Amazon deployment, Home Assistant ingress and Echo acceptance remain pending.
+Candidate **1.3.0-beta.1** moves application settings into Setup, adds Amazon credentials and certificate selection, derives the callback URL automatically, and removes the unused AWS region setting. Open `/status` and `/setup` through the add-on Web UI in Home Assistant ingress, with no second app login. The private ingress port is 8099; APIs remain on 5000. Set the registered callback to `https://your-public-host/ma-alexa-skill/setup/oauth/callback`, covered by the existing core skill proxy route. No public `/setup` or `/status` locations are required. The status page checks public URL reachability in the background. See the [complete deployment guide](../docs/PERSONAL_SKILL_DEPLOYMENT.md). Live Amazon deployment, Home Assistant ingress and Echo acceptance remain pending.

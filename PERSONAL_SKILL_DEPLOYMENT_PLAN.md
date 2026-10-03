@@ -62,3 +62,16 @@ A real Amazon account must complete the one-time security-profile registration a
 - Status now checks public skill health, HTTPS stream-host connectivity and the current rewritten audio URL in a background cache, reporting TLS/DNS/timeouts/HTTP errors. Results describe add-on-side reachability; Echo acceptance remains necessary.
 
 Ingress/diagnostics revision validation: **91 combined tests** passed locally and in both ARM64/AMD64 candidate images, including gateway spoofing rejection, ingress cookie paths, callback replay/original-browser completion, HTTPS failure diagnostics and caching. Add-on lint passed. Browser status→setup navigation and simulated deployment worked through the ingress prefix. Actual Home Assistant, Amazon and Echo acceptance remain pending.
+
+## Web settings follow-up (3 October 2026)
+
+- Move all 13 useful settings into the ingress setup page; generate the callback URL from the public skill origin instead of maintaining a separate editable value. Put API credentials, certificate selection and troubleshooting controls under Advanced.
+- Remove the unused AWS region setting from the maintained add-on and application deployment examples.
+- Store settings atomically with owner-only permissions in `/data/app-settings.json`. Import available legacy add-on options/environment values once, preserve web edits across restarts, and retain standalone environment bootstrap support.
+- Keep secrets masked, retain them for blank inputs, provide explicit optional-secret removal and deliberate API-password reveal. Generate the initial add-on API password once.
+- Apply playback/control settings on subsequent requests; never deploy merely because settings were saved. Block edits during a deployment, invalidate old reviews and pending sign-in, and reject stale browser saves.
+- Validate persistence, migration, request authentication, callback derivation, secret handling and playback regressions; live Supervisor upgrade and Amazon acceptance remain pending.
+
+- Container startup revealed that Flask ASK SDK imports a DynamoDB client even though this service does not use it. Keep an internal `us-east-1` compatibility default before importing that SDK; the unused user-facing AWS region option remains removed.
+
+Web-settings validation: **108 combined tests** passed locally and in both ARM64/AMD64 candidate images. Both images passed real HTTP/proxy/playback/concurrency and shutdown checks. A simulated ingress browser saved settings and retained them on reload. Secret masking/retention/removal, stale saves, migration, file permissions, credential updates and deployment edit locking are covered. Real Supervisor upgrade/ingress and Amazon/Echo acceptance remain pending.

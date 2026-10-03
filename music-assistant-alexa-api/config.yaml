@@ -8,33 +8,6 @@ arch:
   - aarch64
   - amd64
 init: false
-options:
-  ma_hostname: ""
-  skill_hostname: ""
-  api_username: "ma-local-alexa-api"
-  aws_default_region: "us-east-1"
-  locale: "en-US"
-  skip_url_validation: false
-  ma_api_url: ""
-  enable_apl: false
-  lwa_client_id: ""
-  lwa_redirect_uri: ""
-  skill_certificate_type: "Trusted"
-schema:
-  ma_hostname: "str"
-  skill_hostname: "str?"
-  api_username: "str"
-  api_password: "password?"
-  aws_default_region: "str?"
-  locale: "str"
-  skip_url_validation: "bool"
-  ma_api_url: "str?"
-  ma_api_token: "password?"
-  enable_apl: "bool"
-  lwa_client_id: "str?"
-  lwa_client_secret: "password?"
-  lwa_redirect_uri: "str?"
-  skill_certificate_type: "list(Trusted|Wildcard)"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
 ingress: true
 ingress_entry: /status

@@ -55,8 +55,7 @@ RUN ln -s /app/src /app/app && \
 COPY gunicorn.conf.py /app/gunicorn.conf.py
 COPY rootfs /
 
-ENV AWS_DEFAULT_REGION="us-east-1" \
-    LOCALE="en-US" \
+ENV LOCALE="en-US" \
     MA_HOSTNAME="" \
     PORT="5000" \
     QUIET_HTTP="1" \
