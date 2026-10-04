@@ -1,6 +1,6 @@
 # Automate personal Alexa skill setup
 
-Status: The deployment implementation through beta.2 is merged to main in both repositories. Beta.3 connection/UI refinements are in skill PR #5 and add-on PR #32, with publication awaiting their reviews and CI. The owner has authorized beta.3 publication for testing; live Amazon/Echo acceptance is still required before promotion to a stable release.
+Status: The deployment implementation through beta.2 is merged to main in both repositories. Beta.3 connection/UI refinements are in merged skill PR #5, follow-up routing fix PR #6 and add-on PR #32, with publication awaiting the remaining reviews and CI. The owner has authorized beta.3 publication for testing; live Amazon/Echo acceptance is still required before promotion to a stable release.
 
 ## Summary
 
@@ -119,7 +119,7 @@ Connection/style validation: **153 combined tests** passed locally and in ARM64/
 
 - Beta.3 UI refinement: Status places the arrow-style Setup link above its title and groups checks into Public URL reachability, Alexa skill, Playback APIs, Echo Show display and Recent activity sections. Setup places API username/password and reveal in Credentials; public skill endpoint, callback, MA control URL/token move into Advanced. The public skill endpoint remains required for Amazon deployment. All 153 tests and connection JavaScript checks still pass.
 
-- Beta.3 endpoint default: blank skill endpoint now derives from the public audio URL plus `/ma-alexa-skill/`; existing explicit endpoints remain overrides. Backend deployment, reachability and callback use the effective endpoint. The Setup placeholder and callback preview follow unsaved audio/override edits; saving persists a blank override so subsequent audio changes update the default.
+- Beta.3 endpoint default: blank skill endpoint now derives from the public audio URL origin plus `/ma-alexa-skill/`; existing explicit endpoints remain overrides. Backend deployment, reachability and callback use the effective endpoint. The Setup placeholder and callback preview follow unsaved audio/override edits; saving persists a blank override so subsequent audio changes update the default.
 
 Endpoint-default validation: **155 combined tests** passed locally and in ARM64/AMD64 images, with runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. Regressions cover default path construction, explicit overrides, derived callback origins and persistence across audio-URL changes. Ruff, whitespace and connection JavaScript checks pass.
 
