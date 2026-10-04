@@ -1,31 +1,49 @@
 configuration:
   ma_hostname:
-    name: Music Assistant Hostname
-    description: The external hostname of the music assistant, must be https://.
+    name: Ma Hostname (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   skill_hostname:
-    name: Alexa Skill Hostname
-    description: The public HTTPS endpoint Alexa uses to reach this add-on.
+    name: Skill Hostname (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   api_username:
-    name: API Username
-    description: The username to be provided by this addon, for connection from Music Assistant.
+    name: Api Username (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   api_password:
-    name: API Password
-    description: The password for the API access, if this is empty it will be generated on first start.
-  aws_default_region:
-    name: AWS Default Region
-    description: AWS default Region for API calls
+    name: Api Password (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   locale:
-    name: Alexa Skill Locale
-    description: The locale used when creating and updating the Alexa skill.
+    name: Locale (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   skip_url_validation:
-    name: Skip Stream URL Validation
-    description: Disable the add-on's reachability check for rewritten Music Assistant stream URLs.
+    name: Skip Url Validation (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   ma_api_url:
-    name: Music Assistant Control API URL
-    description: Optional local Music Assistant server URL for voice controls, typically http://homeassistant:8095. This is separate from the public stream URL.
+    name: Ma Api Url (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   ma_api_token:
-    name: Music Assistant API Token
-    description: Long-lived Music Assistant access token for voice controls.
+    name: Ma Api Token (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
   enable_apl:
-    name: Enable Echo Show Display
-    description: Opt in to APL artwork and on-screen controls. Disabled by default for playback stability.
+    name: Enable Apl (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  lwa_client_id:
+    name: Lwa Client Id (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  lwa_client_secret:
+    name: Lwa Client Secret (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
+  skill_certificate_type:
+    name: Skill Certificate Type (migration only)
+    description: Legacy upgrade import only. Edit this setting in Web UI → Setup.
+      After initial migration, changing this legacy field has no effect.
