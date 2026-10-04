@@ -66,7 +66,7 @@ The status page reports the saved verification time and ID. It is a record of th
 
 ## Acceptance still required
 
-Test the wizard against a real Amazon account: sign in, select an existing skill, deploy twice to the same ID, restart during a build and resume, reconnect after revocation, then verify Echo playback through the public proxy. The earlier real-device confirmation for stable 1.2.0 validates playback, not this new deployment flow. Keep the candidate unmerged until those checks pass.
+Test the wizard against a real Amazon account: sign in, select an existing skill, deploy twice to the same ID, restart during a build and resume, reconnect after revocation, then verify Echo playback through the public proxy. The earlier real-device confirmation for stable 1.2.0 validates playback, not this new deployment flow. Beta candidates may be merged and published for these live tests. Do not promote to a stable release until all these checks pass.
 
 
 ### Register Login with Amazon
