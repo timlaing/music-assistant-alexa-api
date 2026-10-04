@@ -1,6 +1,6 @@
 # Automate personal Alexa skill setup
 
-Status: The deployment implementation through beta.2 is merged to main in both repositories. Beta.3 connection/UI refinements are in merged skill PR #5, follow-up routing fix PR #6 and add-on PR #32, with publication awaiting the remaining reviews and CI. The owner has authorized beta.3 publication for testing; live Amazon/Echo acceptance is still required before promotion to a stable release.
+Status: Beta.3 is merged and published in both repositories. Beta.4 onboarding, certificate and deployment-verification refinements are in skill PR #7 and add-on PR #33; publication awaits their reviews and CI. Live Amazon/Echo acceptance remains required before stable promotion.
 
 ## Summary
 
@@ -124,3 +124,15 @@ Connection/style validation: **153 combined tests** passed locally and in ARM64/
 Endpoint-default validation: **155 combined tests** passed locally and in ARM64/AMD64 images, with runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. Regressions cover default path construction, explicit overrides, derived callback origins and persistence across audio-URL changes. Ruff, whitespace and connection JavaScript checks pass.
 
 - Move Amazon client ID, secret and optional removal into **Connect to Amazon**, with a local save control and **Connect** button. Keep the controls associated with the existing settings form so validation, secret retention, revision and CSRF protections stay consistent.
+
+
+## Beta.4 follow-up (skill PR #7; add-on PR #33)
+
+- Add LWA developer-console registration steps and the generated public callback to Connect to Amazon.
+- Support Trusted, Trusted sub-domain and File certificate choices. Validate the public PEM file and upload/verify it through Amazon before enabling testing; preserve callback TLS validation.
+- Deploy the maintained add-on artwork as both Alexa icon sizes across retained locales.
+- Put feedback in the relevant settings, connection, selection or deployment section; show the connected account with a green tick.
+- Wait for explicitly running builds and verify successful imports against the exported approved package when legacy build status fields are missing. Preserve failure and mismatch gates and resumable imports.
+- Validation: 168 combined tests pass locally; live Amazon certificate deployment and owner-reported build scenario require retesting with the updated add-on.
+
+- Group Alexa locale, Echo Show controls, endpoint override, certificate type/file and personal skill selection in Skill setup. Keep LWA registration/client credentials in Connect to Amazon and runtime/API settings in Application settings.

@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.0-beta.4 (candidate)
+
+- Put LWA registration instructions, the developer-console link and generated callback URL in Connect to Amazon.
+- Show connection success with a green tick and place setup feedback in its relevant section.
+- Offer Trusted, Trusted sub-domain and File certificate choices; validate and deploy public PEM certificates for development testing.
+- Use the maintained add-on artwork for the skill icons.
+- Wait for running builds and verify the imported package when Amazon omits legacy build-status fields, preserving failure/mismatch checks and accepted-import resume.
+
 ## 1.3.0-beta.3
 
 - Show Amazon connection progress and errors beside Connect, validate settings before sign-in and provide a direct sign-in link when pop-ups are blocked.
