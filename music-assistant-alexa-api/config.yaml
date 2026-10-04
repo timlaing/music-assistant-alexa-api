@@ -33,7 +33,7 @@ schema:
   skill_certificate_type: "list(Trusted|Wildcard)?"
 image: "ghcr.io/timlaing/{arch}-addon-ma-alexa-api"
 ingress: true
-ingress_entry: /status
+ingress_entry: status
 panel_icon: mdi:music
 homeassistant: 2025.12.5
 ports:

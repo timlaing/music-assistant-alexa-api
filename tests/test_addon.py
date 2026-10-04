@@ -50,7 +50,11 @@ def test_personal_deployment_option_and_logging_contract():
         "skip_url_validation",
     }
     assert config["ingress"] and config.get("ingress_port", 8099) == 8099
-    assert config["ingress_entry"] == "/status"
+    assert config["ingress_entry"] == "status"
+    # Supervisor appends the configured entry to an ingress URL ending in /.
+    assert "/api/hassio_ingress/session/" + config["ingress_entry"] == (
+        "/api/hassio_ingress/session/status"
+    )
     assert "8099/tcp" not in config["ports"]
     assert "webui" not in config
     run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
