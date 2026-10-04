@@ -122,3 +122,5 @@ Connection/style validation: **153 combined tests** passed locally and in ARM64/
 - Beta.3 endpoint default: blank skill endpoint now derives from the public audio URL plus `/ma-alexa-skill/`; existing explicit endpoints remain overrides. Backend deployment, reachability and callback use the effective endpoint. The Setup placeholder and callback preview follow unsaved audio/override edits; saving persists a blank override so subsequent audio changes update the default.
 
 Endpoint-default validation: **155 combined tests** passed locally and in ARM64/AMD64 images, with runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. Regressions cover default path construction, explicit overrides, derived callback origins and persistence across audio-URL changes. Ruff, whitespace and connection JavaScript checks pass.
+
+- Move Amazon client ID, secret and optional removal into **Connect to Amazon**, with a local save control and **Connect** button. Keep the controls associated with the existing settings form so validation, secret retention, revision and CSRF protections stay consistent.
