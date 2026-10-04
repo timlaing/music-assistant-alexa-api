@@ -1,6 +1,6 @@
 # Personal Alexa skill deployment
 
-This feature is available on main in candidate **1.3.0-beta.2**. Stable **1.2.0** does not contain this wizard. Automated tests use Amazon API fixtures; live Amazon sign-in/deployment and Echo playback with the new wizard still need acceptance testing.
+This feature is available on main in candidate **1.3.0-beta.3**. Stable **1.2.0** does not contain this wizard. Automated tests use Amazon API fixtures; live Amazon sign-in/deployment and Echo playback with the new wizard still need acceptance testing.
 
 The web app creates or updates your **personal development skill** under your own Amazon developer account. It configures the endpoint and interfaces, imports and builds the bundled voice model, and enables development testing. It does not publish or certify a skill.
 

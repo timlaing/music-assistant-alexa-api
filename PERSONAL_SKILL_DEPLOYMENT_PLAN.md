@@ -1,6 +1,6 @@
 # Automate personal Alexa skill setup
 
-Status: Implementation merged to main in both repositories. Candidate 1.3.0-beta.2 includes the ingress status-entry fix; live Amazon/Echo acceptance remains pending.
+Status: Implementation merged to main in both repositories. Candidate 1.3.0-beta.3 includes ingress status-entry, Amazon connection feedback and shared page styling fixes; live Amazon/Echo acceptance remains pending.
 
 ## Summary
 
