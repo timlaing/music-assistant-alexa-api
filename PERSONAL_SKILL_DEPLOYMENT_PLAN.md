@@ -1,6 +1,6 @@
 # Automate personal Alexa skill setup
 
-Status: Implementation merged to main in both repositories. Candidate 1.3.0-beta.3 includes ingress status-entry, Amazon connection feedback and shared page styling fixes; live Amazon/Echo acceptance remains pending.
+Status: The deployment implementation through beta.2 is merged to main in both repositories. Beta.3 connection/UI refinements are in skill PR #5 and add-on PR #32, with publication awaiting their reviews and CI. The owner has authorized beta.3 publication for testing; live Amazon/Echo acceptance is still required before promotion to a stable release.
 
 ## Summary
 
@@ -53,7 +53,7 @@ Use the chosen self-hosted sign-in approach. One initial Amazon login applicatio
 
 ## Remaining acceptance gate
 
-A real Amazon account must complete the one-time security-profile registration and sign-in, deploy an existing personal skill, repeat the update without changing its ID, exercise restart/resume and verify Echo playback. Existing stable-1.2.0 device confirmation does not validate these new APIs. Do not merge/promote this candidate until live acceptance passes.
+A real Amazon account must complete the one-time security-profile registration and sign-in, deploy an existing personal skill, repeat the update without changing its ID, exercise restart/resume and verify Echo playback. Existing stable-1.2.0 device confirmation does not validate these new APIs. The owner has authorized merging and publishing beta candidates for live testing. Do not promote to a stable release until live acceptance passes.
 
 ## Ingress and status revision
 
@@ -118,3 +118,7 @@ Entry-path validation: **151 combined tests** passed locally and in ARM64/AMD64 
 Connection/style validation: **153 combined tests** passed locally and in ARM64/AMD64 images, including runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. JavaScript checks covered normal popup navigation, blocked-popup fallback, visible preparation errors and missing-settings feedback. A simulated ingress browser verified matching page layouts and prefixed links. Live owner sign-in remains to be tested.
 
 - Beta.3 UI refinement: Status places the arrow-style Setup link above its title and groups checks into Public URL reachability, Alexa skill, Playback APIs, Echo Show display and Recent activity sections. Setup places API username/password and reveal in Credentials; public skill endpoint, callback, MA control URL/token move into Advanced. The public skill endpoint remains required for Amazon deployment. All 153 tests and connection JavaScript checks still pass.
+
+- Beta.3 endpoint default: blank skill endpoint now derives from the public audio URL plus `/ma-alexa-skill/`; existing explicit endpoints remain overrides. Backend deployment, reachability and callback use the effective endpoint. The Setup placeholder and callback preview follow unsaved audio/override edits; saving persists a blank override so subsequent audio changes update the default.
+
+Endpoint-default validation: **155 combined tests** passed locally and in ARM64/AMD64 images, with runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. Regressions cover default path construction, explicit overrides, derived callback origins and persistence across audio-URL changes. Ruff, whitespace and connection JavaScript checks pass.

@@ -24,7 +24,7 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 
 ### Settings
 
-For candidate **1.3.0-beta.3**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; stable **1.2.0** still uses the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md). Music Assistant API credentials are in **Credentials**. Additional connection settings and troubleshooting controls are under **Advanced settings**.
+For candidate **1.3.0-beta.3**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; stable **1.2.0** still uses the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md). The public skill endpoint defaults to the public audio URL plus `/ma-alexa-skill/`; the Advanced endpoint field overrides this default. Music Assistant API credentials are in **Credentials**. Additional connection settings and troubleshooting controls are under **Advanced settings**.
 
 Existing values are imported once from available legacy `/data/options.json` values and environment variables into `/data/app-settings.json`; later saves and restarts use that file. Secrets stay masked, with an explicit **Show current API password** action for connecting Music Assistant. Saving applies locally without deploying to Amazon. The unused AWS region option is removed. Persist and protect `/data` backups.
 
