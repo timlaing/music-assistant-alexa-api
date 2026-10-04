@@ -100,3 +100,11 @@ Follow-up validation: **140 combined tests** passed locally and in ARM64/AMD64 i
 - Add deterministic concurrent status/settings tests and stale-attempt/ownership/connection checks. Add-on PR #30 was approved on its prior head; the synchronized pointer requires review of this follow-up.
 
 Concurrency follow-up validation: **150 combined tests** passed locally and in ARM64/AMD64 images, including real HTTP/proxy/playback/concurrency, certificate and shutdown checks. Ruff and whitespace checks passed. Live Supervisor migration and Amazon/Echo acceptance remain pending.
+
+### Home Assistant entry-path correction (4 October 2026)
+
+- Owner reported Open Web UI showing the playback-listener denial instead of status. Supervisor appends `ingress_entry` to an ingress URL ending in `/`; the former `/status` entry therefore generates `//status`.
+- Set the entry to relative `status`. Normalize leading slashes only after validating the raw Supervisor peer and ingress prefix so cached entry links open status while private playback APIs remain blocked.
+- Regression coverage includes the actual doubled-slash WSGI path, status-page links, blocked playback paths and spoofed gateway headers. This report confirms the entry failure on a real installation; it does not establish Amazon/Echo deployment acceptance.
+
+Entry-path validation: **151 combined tests** passed locally and in ARM64/AMD64 images, with HTTP/proxy/playback/concurrency, certificate and shutdown checks. Ruff and whitespace checks passed. The corrected entry still needs confirmation through the owner's Home Assistant Open Web UI button.
