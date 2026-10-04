@@ -1,6 +1,8 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
-## 1.3.0-beta.4 (candidate)
+## 1.3.0
+
+- Promote the personal-skill deployment wizard to stable following maintainer confirmation that it is tested and working.
 
 - Put LWA registration instructions, the developer-console link and generated callback URL in Connect to Amazon.
 - Show connection success with a green tick and place setup feedback in its relevant section.

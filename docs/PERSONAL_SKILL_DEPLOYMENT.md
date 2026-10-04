@@ -1,6 +1,6 @@
 # Personal Alexa skill deployment
 
-The wizard is available in **1.3.0-beta.3**; the registration guidance, certificate file and build-verification refinements described here are prepared for **1.3.0-beta.4**. Stable **1.2.0** does not contain this wizard. Automated tests use Amazon API fixtures; live Amazon sign-in/deployment and Echo playback with the new wizard still need acceptance testing.
+The personal-skill deployment wizard is available in stable **1.3.0**, including registration guidance, certificate uploads and build verification. On 4 October 2026 the maintainer confirmed it was tested and working and authorized stable publication. Automated checks use Amazon API fixtures; the live confirmation is maintainer-reported.
 
 The web app creates or updates your **personal development skill** under your own Amazon developer account. It configures the endpoint and interfaces, imports and builds the bundled voice model, and enables development testing. It does not publish or certify a skill.
 
@@ -64,9 +64,9 @@ Expired access tokens are refreshed automatically. If refresh is rejected, recon
 
 The status page reports the saved verification time and ID. It is a record of the last deployment, not a continuous check of Amazon-side changes. Run a new review/deployment after making changes in the developer console.
 
-## Acceptance still required
+## Live validation and regression checklist
 
-Test the wizard against a real Amazon account: sign in, select an existing skill, deploy twice to the same ID, restart during a build and resume, reconnect after revocation, then verify Echo playback through the public proxy. The earlier real-device confirmation for stable 1.2.0 validates playback, not this new deployment flow. Beta candidates may be merged and published for these live tests. Do not promote to a stable release until all these checks pass.
+For future regression testing, check the wizard against a real Amazon account: sign in, select an existing skill, deploy twice to the same ID, restart during a build and resume, reconnect after revocation, then verify Echo playback through the public proxy. The maintainer confirmed the current version works and authorized stable 1.3.0 on 4 October 2026. That confirmation does not document each checklist scenario separately; retain this checklist for future changes.
 
 
 ### Register Login with Amazon

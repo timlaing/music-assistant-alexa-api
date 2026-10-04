@@ -24,7 +24,7 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 
 ### Settings
 
-For candidate **1.3.0-beta.4**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; stable **1.2.0** still uses the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md). The public skill endpoint defaults to the public audio URL origin plus `/ma-alexa-skill/`; the Advanced endpoint field overrides this default. Music Assistant API credentials are in **Credentials**. Additional connection settings and troubleshooting controls are under **Advanced settings**.
+For stable **1.3.0**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; older **1.2.0** installations use the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md). The public skill endpoint defaults to the public audio URL origin plus `/ma-alexa-skill/`; the Advanced endpoint field overrides this default. Music Assistant API credentials are in **Credentials**. Additional connection settings and troubleshooting controls are under **Advanced settings**.
 
 Existing values are imported once from available legacy `/data/options.json` values and environment variables into `/data/app-settings.json`; later saves and restarts use that file. Secrets stay masked, with an explicit **Show current API password** action for connecting Music Assistant. Saving applies locally without deploying to Amazon. The unused AWS region option is removed. Persist and protect `/data` backups.
 
@@ -98,7 +98,7 @@ See [the update plan](docs/UPDATE_PLAN.md) for findings and validation evidence.
 
 ## Skill Setup
 
-Candidate **1.3.0-beta.3** replaces interactive ASK CLI setup with a personal-skill deployment wizard. It requires one-time Login with Amazon security profile registration, then connects Amazon through Home Assistant ingress without a second app login, explicitly selects your existing skill, reviews settings, imports/builds the voice model and enables development testing. See the [personal skill deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md) for options, the callback under the existing `/ma-alexa-skill/` route, ingress access and URL reachability checks and recovery. Stable **1.2.0** retains the previous setup flow; the candidate still needs live Amazon and Echo acceptance testing.
+Stable **1.3.0** replaces interactive ASK CLI setup with a personal-skill deployment wizard. It requires one-time Login with Amazon security profile registration, then connects Amazon through Home Assistant ingress without a second app login, explicitly selects your existing skill, reviews settings, imports/builds the voice model and enables development testing. See the [personal skill deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md) for options, the callback under the existing `/ma-alexa-skill/` route, ingress access and URL reachability checks and recovery. The maintainer confirmed the new flow was tested and working on 4 October 2026. Older **1.2.0** installations retain the previous setup flow.
 
 The manual steps below remain available when you prefer to manage the skill directly in the Alexa Developer Console.
 
@@ -141,4 +141,4 @@ Done 🙂, Your skill should now be live - enjoy.
 
 ### Migration release compatibility
 
-Candidate 1.3.0-beta.3 keeps the legacy Supervisor schema with migration-only labels to preserve existing configuration during upgrade. Settings are imported once into `/data/app-settings.json`; all subsequent edits belong in ingress Setup. Later edits to the legacy fields are ignored. The obsolete AWS region option remains removed. Remove this temporary compatibility schema only in a later release once migration is verified.
+Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to preserve existing configuration during upgrade. Settings are imported once into `/data/app-settings.json`; all subsequent edits belong in ingress Setup. Later edits to the legacy fields are ignored. The obsolete AWS region option remains removed. Remove this temporary compatibility schema only in a later release once migration is verified.

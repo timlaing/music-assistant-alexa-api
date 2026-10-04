@@ -1,6 +1,6 @@
 # Automate personal Alexa skill setup
 
-Status: Beta.3 is merged and published in both repositories. Beta.4 onboarding, certificate and deployment-verification refinements are in skill PR #7 and add-on PR #33; publication awaits their reviews and CI. Live Amazon/Echo acceptance remains required before stable promotion.
+Status: All implementation and guide PRs are merged. On 4 October 2026 the owner confirmed the feature was tested and working and requested stable 1.3.0 publication. Preparing matching stable releases and signed tags; retain the historical validation record and expanded regression checklist below.
 
 ## Summary
 
@@ -51,9 +51,9 @@ Use the chosen self-hosted sign-in approach. One initial Amazon login applicatio
 - Changes made in Amazon between review and deployment are detected by a canonical exported-package comparison. Amazon confirmation requires successful package import, manifest/model builds, matching exported package and development enablement.
 - The existing playback/status regression suite remains green. Additional API fixtures cover creation/redeployment, duplicate names, retained resources, failures, expired credentials, callback rejection, restart recovery and settings validation. All **80 combined tests** passed locally and in both ARM64 and AMD64 candidate images. HTTP/proxy, playback, concurrency, certificate-registry and graceful shutdown checks passed in both images. The add-on linter and new module/test static checks passed. A browser check completed review and deployment with simulated Amazon responses and no JavaScript errors; live acceptance remains pending.
 
-## Remaining acceptance gate
+## Historical acceptance gate and regression checklist
 
-A real Amazon account must complete the one-time security-profile registration and sign-in, deploy an existing personal skill, repeat the update without changing its ID, exercise restart/resume and verify Echo playback. Existing stable-1.2.0 device confirmation does not validate these new APIs. The owner has authorized merging and publishing beta candidates for live testing. Do not promote to a stable release until live acceptance passes.
+A real Amazon account must complete the one-time security-profile registration and sign-in, deploy an existing personal skill, repeat the update without changing its ID, exercise restart/resume and verify Echo playback. Existing stable-1.2.0 device confirmation does not validate these new APIs. The owner has authorized merging and publishing beta candidates for live testing. This was the beta-phase gate. On 4 October 2026 the owner confirmed the feature worked and explicitly authorized stable publication; individual checklist scenarios were not separately reported.
 
 ## Ingress and status revision
 
