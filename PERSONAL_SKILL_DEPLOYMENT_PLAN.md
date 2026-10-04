@@ -108,3 +108,11 @@ Concurrency follow-up validation: **150 combined tests** passed locally and in A
 - Regression coverage includes the actual doubled-slash WSGI path, status-page links, blocked playback paths and spoofed gateway headers. This report confirms the entry failure on a real installation; it does not establish Amazon/Echo deployment acceptance.
 
 Entry-path validation: **151 combined tests** passed locally and in ARM64/AMD64 images, with HTTP/proxy/playback/concurrency, certificate and shutdown checks. Ruff and whitespace checks passed. The corrected entry still needs confirmation through the owner's Home Assistant Open Web UI button.
+
+### Amazon connection feedback and consistent pages (4 October 2026)
+
+- Owner reported Connect Amazon opening nothing. The existing handler closes its blank window when preparation fails and reports the failure above the settings, away from the button. First-use status also skipped OAuth prerequisite validation when no tokens existed. The exact installation error is not available locally.
+- Validate prerequisites before first sign-in, display concrete configuration errors and connection progress beside Connect, and keep a direct Amazon sign-in link available when a popup is blocked or unavailable. Preserve the CSRF, callback-state and original-browser checks.
+- Use one shared responsive style template for Status and Setup, preserving status polling and ingress-prefixed links. Browser preview uses fixtures; no live Amazon authorization is claimed.
+
+Connection/style validation: **153 combined tests** passed locally and in ARM64/AMD64 images, including runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. JavaScript checks covered normal popup navigation, blocked-popup fallback, visible preparation errors and missing-settings feedback. A simulated ingress browser verified matching page layouts and prefixed links. Live owner sign-in remains to be tested.
