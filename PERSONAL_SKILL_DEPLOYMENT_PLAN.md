@@ -1,6 +1,6 @@
 # Automate personal Alexa skill setup
 
-Status: The deployment implementation through beta.2 is merged to main in both repositories. Beta.3 connection/UI refinements are in merged skill PR #5, follow-up routing fix PR #6 and add-on PR #32, with publication awaiting the remaining reviews and CI. The owner has authorized beta.3 publication for testing; live Amazon/Echo acceptance is still required before promotion to a stable release.
+Status: Beta.3 is merged and published in both repositories. Beta.4 onboarding, certificate and deployment-verification refinements are in skill PR #7 and add-on PR #33; publication awaits their reviews and CI. Live Amazon/Echo acceptance remains required before stable promotion.
 
 ## Summary
 
@@ -126,7 +126,7 @@ Endpoint-default validation: **155 combined tests** passed locally and in ARM64/
 - Move Amazon client ID, secret and optional removal into **Connect to Amazon**, with a local save control and **Connect** button. Keep the controls associated with the existing settings form so validation, secret retention, revision and CSRF protections stay consistent.
 
 
-## Beta.4 follow-up (skill PR #7; companion add-on PR pending)
+## Beta.4 follow-up (skill PR #7; add-on PR #33)
 
 - Add LWA developer-console registration steps and the generated public callback to Connect to Amazon.
 - Support Trusted, Trusted sub-domain and File certificate choices. Validate the public PEM file and upload/verify it through Amazon before enabling testing; preserve callback TLS validation.
