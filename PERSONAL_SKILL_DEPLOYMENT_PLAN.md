@@ -134,3 +134,5 @@ Endpoint-default validation: **155 combined tests** passed locally and in ARM64/
 - Put feedback in the relevant settings, connection, selection or deployment section; show the connected account with a green tick.
 - Wait for explicitly running builds and verify successful imports against the exported approved package when legacy build status fields are missing. Preserve failure and mismatch gates and resumable imports.
 - Validation: 168 combined tests pass locally; live Amazon certificate deployment and owner-reported build scenario require retesting with the updated add-on.
+
+- Group Alexa locale, Echo Show controls, endpoint override, certificate type/file and personal skill selection in Skill setup. Keep LWA registration/client credentials in Connect to Amazon and runtime/API settings in Application settings.
