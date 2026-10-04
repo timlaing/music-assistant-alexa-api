@@ -3,7 +3,8 @@
 ## 1.3.0-beta.3
 
 - Show Amazon connection progress and errors beside Connect, validate settings before sign-in and provide a direct sign-in link when pop-ups are blocked.
-- Share responsive page styling between Status and Setup.
+- Share responsive page styling between Status and Setup; place Setup navigation above the status title and group checks under section headings.
+- Put required API username/password in Credentials and additional connection fields in Advanced settings.
 
 ## 1.3.0-beta.2
 

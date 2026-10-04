@@ -116,3 +116,5 @@ Entry-path validation: **151 combined tests** passed locally and in ARM64/AMD64 
 - Use one shared responsive style template for Status and Setup, preserving status polling and ingress-prefixed links. Browser preview uses fixtures; no live Amazon authorization is claimed.
 
 Connection/style validation: **153 combined tests** passed locally and in ARM64/AMD64 images, including runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. JavaScript checks covered normal popup navigation, blocked-popup fallback, visible preparation errors and missing-settings feedback. A simulated ingress browser verified matching page layouts and prefixed links. Live owner sign-in remains to be tested.
+
+- Beta.3 UI refinement: Status places the arrow-style Setup link above its title and groups checks into Public URL reachability, Alexa skill, Playback APIs, Echo Show display and Recent activity sections. Setup places API username/password and reveal in Credentials; public skill endpoint, callback, MA control URL/token move into Advanced. The public skill endpoint remains required for Amazon deployment. All 153 tests and connection JavaScript checks still pass.
