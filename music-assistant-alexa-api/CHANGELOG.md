@@ -1,5 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.0-beta.3
+
+- Show Amazon connection progress and errors beside Connect, validate settings before sign-in and provide a direct sign-in link when pop-ups are blocked.
+- Share responsive page styling between Status and Setup; place Setup navigation above the status title and group checks under section headings.
+- Put required API username/password in Credentials and additional connection fields in Advanced settings.
+- Default the skill endpoint to the public audio URL origin plus `/ma-alexa-skill/`, with an optional override.
+
 ## 1.3.0-beta.2
 
 - Fix Home Assistant Open Web UI opening the status page with a doubled slash; accept cached status entry links only through the trusted ingress gateway.
