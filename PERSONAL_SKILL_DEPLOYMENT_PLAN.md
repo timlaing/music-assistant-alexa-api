@@ -124,3 +124,13 @@ Connection/style validation: **153 combined tests** passed locally and in ARM64/
 Endpoint-default validation: **155 combined tests** passed locally and in ARM64/AMD64 images, with runtime HTTP/proxy/playback/concurrency, certificate and shutdown checks. Regressions cover default path construction, explicit overrides, derived callback origins and persistence across audio-URL changes. Ruff, whitespace and connection JavaScript checks pass.
 
 - Move Amazon client ID, secret and optional removal into **Connect to Amazon**, with a local save control and **Connect** button. Keep the controls associated with the existing settings form so validation, secret retention, revision and CSRF protections stay consistent.
+
+
+## Beta.4 follow-up (skill PR #7; companion add-on PR pending)
+
+- Add LWA developer-console registration steps and the generated public callback to Connect to Amazon.
+- Support Trusted, Trusted sub-domain and File certificate choices. Validate the public PEM file and upload/verify it through Amazon before enabling testing; preserve callback TLS validation.
+- Deploy the maintained add-on artwork as both Alexa icon sizes across retained locales.
+- Put feedback in the relevant settings, connection, selection or deployment section; show the connected account with a green tick.
+- Wait for explicitly running builds and verify successful imports against the exported approved package when legacy build status fields are missing. Preserve failure and mismatch gates and resumable imports.
+- Validation: 168 combined tests pass locally; live Amazon certificate deployment and owner-reported build scenario require retesting with the updated add-on.
