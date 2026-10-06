@@ -64,6 +64,3 @@ def test_personal_deployment_option_and_logging_contract():
     assert "/data/skill-deployment.json" in run
     log_format = (ADDON / "gunicorn.conf.py").read_text()
     assert "%(U)s" in log_format and "%(r)s" not in log_format
-    assert (ROOT / "docs/PERSONAL_SKILL_DEPLOYMENT.md").read_bytes() == (
-        ADDON / "skill-api/docs/PERSONAL_SKILL_DEPLOYMENT.md"
-    ).read_bytes()

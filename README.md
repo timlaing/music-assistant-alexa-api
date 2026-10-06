@@ -24,7 +24,7 @@ Many Thanks to @alams154 for the API, this repo turns his good work into an add-
 
 ### Settings
 
-For stable **1.3.0**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; older **1.2.0** installations use the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md). The public skill endpoint defaults to the public audio URL origin plus `/ma-alexa-skill/`; the Advanced endpoint field overrides this default. Music Assistant API credentials are in **Credentials**. Additional connection settings and troubleshooting controls are under **Advanced settings**.
+For stable **1.3.0**, open the add-on **Web UI → Setup** through Home Assistant ingress to edit all application settings. The table below describes these web settings; older **1.2.0** installations use the add-on Configuration tab. Amazon credentials and the generated callback URL are covered in the [Skill Setup](#skill-setup). The public skill endpoint defaults to the public audio URL origin plus `/ma-alexa-skill/`; the Advanced endpoint field overrides this default. Music Assistant API credentials are in **Credentials**. Additional connection settings and troubleshooting controls are under **Advanced settings**.
 
 Existing values are imported once from available legacy `/data/options.json` values and environment variables into `/data/app-settings.json`; later saves and restarts use that file. Secrets stay masked, with an explicit **Show current API password** action for connecting Music Assistant. Saving applies locally without deploying to Amazon. The unused AWS region option is removed. Persist and protect `/data` backups.
 
@@ -100,8 +100,6 @@ Set `enable_apl: true` to opt into Echo Show artwork and controls; it defaults
 to false. `skip_url_validation` remains false unless local routing prevents
 this container from checking a stream which the Echo can reach publicly.
 
-See [the update plan](docs/UPDATE_PLAN.md) for findings and validation evidence.
-
 ## Skill Setup
 
 Create or update your personal Alexa development skill through the **Setup** page. You do not need to manually create the skill, import interaction-model JSON, configure interfaces or build it in the Alexa Developer Console. One-time **Login with Amazon (LWA) security-profile registration** is still required.
@@ -114,7 +112,7 @@ Create or update your personal Alexa development skill through the **Setup** pag
 6. Select **Review settings**, check the skill ID/name, endpoint, locale, certificate and display preference, then select **Deploy approved settings**. The app configures the skill, imports/builds the voice model, applies the add-on icon and enables development testing. Saving settings alone does not deploy them. This creates a personal development skill; it does not publish it to the Alexa Skills Store.
 7. In Music Assistant's Alexa provider, set **API URL** to `http://<HA-LAN-IP>:5000` (without `/ma`) and copy the API credentials from Setup. Return to **Status** to check URL reachability, then start playback in Music Assistant and test your Echo using the skill's displayed invocation name.
 
-See the [personal skill deployment guide](docs/PERSONAL_SKILL_DEPLOYMENT.md) for registration details, persistent settings, recovery and certificate requirements. The callback and audio must be publicly reachable; Home Assistant's Setup and Status pages remain private through ingress. For standalone deployment, use your container's API address instead of the add-on LAN address.
+The callback and audio must be publicly reachable; Home Assistant's Setup and Status pages remain private through ingress. For standalone deployment, use your container's API address instead of the add-on LAN address.
 
 ### Migration release compatibility
 
