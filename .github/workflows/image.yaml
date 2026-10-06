@@ -53,7 +53,7 @@ jobs:
           cosign-release: v3.0.6
       - name: Verify base image for PR build
         if: ${{ !inputs.publish }}
-        uses: home-assistant/builder/actions/cosign-verify@4de35182ce1e329181bffcbcc84d33db5e2c7e10 # 2026.06.0
+        uses: home-assistant/builder/actions/cosign-verify@7412f0023ea9b6e58e8bb5059f1660f51376f49a # 2026.09.0
         with:
           image: ${{ steps.settings.outputs.base }}
           cosign-identity: https://github.com/home-assistant/docker-base/.*
