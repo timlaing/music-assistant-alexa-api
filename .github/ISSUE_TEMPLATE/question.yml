@@ -1,0 +1,25 @@
+name: Support question
+description: Support question for the maintained Alexa integration
+labels: [question, needs-triage]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Description
+      description: Explain the problem or use case and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Versions and installation
+      description: Include relevant add-on/skill and Music Assistant versions and how they are installed.
+    validations:
+      required: false
+  - type: textarea
+    id: evidence
+    attributes:
+      label: What you have tried
+      description: Describe the question, troubleshooting steps and relevant results. Redact secrets from logs.
+    validations:
+      required: false

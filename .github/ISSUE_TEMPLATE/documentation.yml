@@ -1,0 +1,25 @@
+name: Documentation request
+description: Documentation request for the maintained Alexa integration
+labels: [documentation, needs-triage]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Description
+      description: Explain the problem or use case and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Affected documentation
+      description: Link the page or section and identify the version it applies to.
+    validations:
+      required: false
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Suggested clarification
+      description: Explain what is missing or incorrect and propose wording or examples.
+    validations:
+      required: false

@@ -5,3 +5,6 @@
 .ruff_cache/
 __pycache__/
 *.py[cod]
+
+# Local implementation planning notes are not repository documentation.
+PERSONAL_SKILL_DEPLOYMENT_PLAN.md

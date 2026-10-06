@@ -1,0 +1,25 @@
+name: Feature request
+description: Feature request for the maintained Alexa integration
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Description
+      description: Explain the problem or use case and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Relevant setup
+      description: Describe the installation or workflow this feature would improve.
+    validations:
+      required: false
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Use case and alternatives
+      description: Explain the desired behavior, why it is needed and any alternatives considered.
+    validations:
+      required: false

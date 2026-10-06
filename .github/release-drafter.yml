@@ -1,0 +1,76 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+filter-by-commitish: true
+commitish: main
+categories:
+  - type: pre-exclude
+    when:
+      label: skip-changelog
+  - title: Features
+    exclusive: true
+    semver-increment: minor
+    when:
+      - conventional:
+          type: feat
+      - label: enhancement
+  - title: Bug Fixes
+    exclusive: true
+    when:
+      - conventional:
+          type: fix
+      - label: bug
+  - title: Dependencies
+    exclusive: true
+    when:
+      label: dependencies
+  - title: Documentation
+    exclusive: true
+    when:
+      - conventional:
+          type: docs
+      - label: documentation
+  - title: Maintenance
+    exclusive: true
+    when:
+      - conventional:
+          type: chore
+      - label: maintenance
+  - title: Other Changes
+    exclusive: true
+  - type: version-resolver
+    semver-increment: major
+    when:
+      label: major
+  - type: version-resolver
+    semver-increment: patch
+autolabeler:
+  - label: documentation
+    files: ['**/*.md', 'docs/**']
+    title: ['/^(docs)(\(.+\))?:/i']
+  - label: bug
+    title: ['/^(fix)(\(.+\))?:/i', '/^fix\b/i']
+    branch: ['/(^|/)fix[/-]/']
+  - label: enhancement
+    title: ['/^(feat)(\(.+\))?:/i']
+    branch: ['/(^|/)feature[/-]/']
+  - label: dependencies
+    title: ['/^(build|chore)\(deps[^)]*\):/i', '/^bump\b/i']
+    branch: ['/^dependabot\//']
+  - label: maintenance
+    files: ['.github/workflows/**', '.github/dependabot*']
+    title: ['/^(ci|chore)(\(.+\))?:/i']
+change-template: '- $TITLE (#$NUMBER) @$AUTHOR'
+change-title-escapes: '\<*_&'
+no-changes-template: '* No notable changes in this release.'
+sort-by: title
+sort-direction: ascending
+template: |
+  ## What's Changed
+
+  $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS
+
+  **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...v$RESOLVED_VERSION
