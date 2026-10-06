@@ -6,21 +6,21 @@ Stable **1.2.0** includes the merged [add-on fixes](https://github.com/timlaing/
 
 ## How to use
 
-1. Open **Web UI → Setup** and configure `ma_hostname` and `skill_hostname` with the public HTTPS stream and skill URLs described below.
+1. Open **Web UI → Setup**, configure the public audio URL and save. The skill endpoint defaults to that URL's origin plus `/ma-alexa-skill/`; override it under **Skill setup → Advanced skill settings** if needed.
 2. Save the API credentials and `locale` (default `en-US`); use **Show current API password** to copy the generated password into Music Assistant.
-3. Select **Setup** for guided Alexa authorization and skill/model creation or update. The manual alternative is described in the [repository README](https://github.com/timlaing/music-assistant-alexa-api#skill-setup).
+3. Follow [Skill Setup](https://github.com/timlaing/music-assistant-alexa-api#skill-setup): register the LWA security profile using Setup's callback URL, connect Amazon, select or create your personal skill, review and deploy. Manual skill/model configuration in the Alexa Developer Console is unnecessary.
 4. In Music Assistant's Alexa provider, set **API URL** to the add-on LAN base URL, such as `http://<HA-LAN-IP>:5000`, without `/ma`, and provide the add-on Basic Auth credentials.
 
-For candidate **1.3.0-beta.1**, these are settings on **Web UI → Setup**, rather than Supervisor options. Stable **1.2.0** retains its Configuration tab. Start the candidate, open the Web UI through ingress and save the application settings before connecting Amazon. API credentials and troubleshooting controls are under **Advanced settings**.
+For stable **1.3.0**, edit application settings on **Web UI → Setup**. API credentials are in **Credentials**; optional control settings and troubleshooting controls are under **Advanced settings**. Legacy Supervisor fields are migration-only after upgrade.
 
 ## Configuration
 
-Candidate settings persist privately in `/data/app-settings.json`. On first start, available legacy add-on options and environment values are imported once; subsequent web edits take precedence after restarts. Secrets are masked and blank secret inputs retain existing values. Explicit removal is available for the optional MA token and Amazon secret. Changing API credentials requires updating Music Assistant; changing Amazon credentials requires reconnecting. Saving never deploys to Amazon.
+Settings persist privately in `/data/app-settings.json`. On first start, available legacy add-on options and environment values are imported once; subsequent web edits take precedence after restarts. Secrets are masked and blank secret inputs retain existing values. Explicit removal is available for the optional MA token and Amazon secret. Changing API credentials requires updating Music Assistant; changing Amazon credentials requires reconnecting. Saving never deploys to Amazon.
 
 | Option | Description |
 | --- | --- |
 | `ma_hostname` | Public HTTPS base URL for Music Assistant streams and local artwork. Required when MA supplies internal stream URLs. |
-| `skill_hostname` | Public HTTPS endpoint Alexa uses to reach the skill. Required for guided setup. |
+| `skill_hostname` | Optional public HTTPS skill endpoint override; blank defaults to the public audio URL origin plus `/ma-alexa-skill/`. |
 | `api_username` | API username. Defaults to `ma-local-alexa-api`. |
 | `api_password` | API password. A random value is generated and saved when left empty. |
 | `locale` | Alexa locale used by guided setup. Defaults to `en-US`. |
@@ -67,10 +67,10 @@ Device mappings persist at `/data/device_players.json`, and ASK credentials at `
 
 Independent simultaneous streams remain an upstream limitation. See the [update plan](https://github.com/timlaing/music-assistant-alexa-api/blob/main/docs/UPDATE_PLAN.md) for the validation record and remaining coverage limitations. The add-on container checks do not validate the skill repository's standalone Docker image or bundled development wrapper.
 
-## Personal skill deployment candidate
+## Personal skill deployment
 
-Candidate **1.3.0-beta.1** moves application settings into Setup, adds Amazon credentials and certificate selection, derives the callback URL automatically, and removes the unused AWS region setting. Open `/status` and `/setup` through the add-on Web UI in Home Assistant ingress, with no second app login. The private ingress port is 8099; APIs remain on 5000. Set the registered callback to `https://your-public-host/ma-alexa-skill/setup/oauth/callback`, covered by the existing core skill proxy route. No public `/setup` or `/status` locations are required. The status page checks public URL reachability in the background. See the [complete deployment guide](../docs/PERSONAL_SKILL_DEPLOYMENT.md). Live Amazon deployment, Home Assistant ingress and Echo acceptance remain pending.
+Stable **1.3.0** moves application settings into Setup, adds Amazon credentials and certificate selection, derives the callback URL automatically, and removes the unused AWS region setting. Open `/status` and `/setup` through the add-on Web UI in Home Assistant ingress, with no second app login. The private ingress port is 8099; APIs remain on 5000. Set the registered callback to `https://your-public-host/ma-alexa-skill/setup/oauth/callback`, covered by the existing core skill proxy route. No public `/setup` or `/status` locations are required. The status page checks public URL reachability in the background. See the [complete deployment guide](../docs/PERSONAL_SKILL_DEPLOYMENT.md). The maintainer confirmed the setup flow was tested and working on 4 October 2026; this is owner-reported acceptance, rather than verification of every recovery scenario.
 
 ### Migration release compatibility
 
-Candidate 1.3.0-beta.1 keeps the legacy Supervisor schema with migration-only labels to preserve existing configuration during upgrade. Settings are imported once into `/data/app-settings.json`; all subsequent edits belong in ingress Setup. Later edits to the legacy fields are ignored. The obsolete AWS region option remains removed. Remove this temporary compatibility schema only in a later release once migration is verified.
+Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to preserve existing configuration during upgrade. Settings are imported once into `/data/app-settings.json`; all subsequent edits belong in ingress Setup. Later edits to the legacy fields are ignored. The obsolete AWS region option remains removed. Remove this temporary compatibility schema only in a later release once migration is verified.
