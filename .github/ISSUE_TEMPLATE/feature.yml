@@ -1,0 +1,25 @@
+name: Feature request
+description: Feature request for the maintained Alexa integration
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Description
+      description: Explain the problem or use case and expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Versions and installation
+      description: Include add-on/skill and Music Assistant versions and architecture. For bugs, retest the latest stable release.
+    validations:
+      required: false
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Reproduction and evidence
+      description: Provide reproduction steps, actual results and relevant logs. Redact passwords, tokens and private identifiers.
+    validations:
+      required: false
