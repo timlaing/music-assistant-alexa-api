@@ -12,14 +12,14 @@ body:
   - type: textarea
     id: environment
     attributes:
-      label: Versions and installation
-      description: Include add-on/skill and Music Assistant versions and architecture. For bugs, retest the latest stable release.
+      label: Relevant setup
+      description: Describe the installation or workflow this feature would improve.
     validations:
       required: false
   - type: textarea
     id: evidence
     attributes:
-      label: Reproduction and evidence
-      description: Provide reproduction steps, actual results and relevant logs. Redact passwords, tokens and private identifiers.
+      label: Use case and alternatives
+      description: Explain the desired behavior, why it is needed and any alternatives considered.
     validations:
       required: false

@@ -13,13 +13,13 @@ body:
     id: environment
     attributes:
       label: Versions and installation
-      description: Include add-on/skill and Music Assistant versions and architecture. For bugs, retest the latest stable release.
+      description: Include relevant add-on/skill and Music Assistant versions and how they are installed.
     validations:
       required: false
   - type: textarea
     id: evidence
     attributes:
-      label: Reproduction and evidence
-      description: Provide reproduction steps, actual results and relevant logs. Redact passwords, tokens and private identifiers.
+      label: What you have tried
+      description: Describe the question, troubleshooting steps and relevant results. Redact secrets from logs.
     validations:
       required: false
