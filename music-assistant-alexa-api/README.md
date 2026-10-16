@@ -1,4 +1,4 @@
-# Home Assistant Add-on: Music Assistant Alexa API add-on
+# Music Assistant Alexa API add-on
 
 Turn your Alexa Echo devices into Music Assistant players.
 

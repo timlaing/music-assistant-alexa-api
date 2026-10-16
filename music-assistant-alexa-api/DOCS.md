@@ -1,4 +1,4 @@
-# Home Assistant Add-on: Music Assistant Alexa API add-on
+# Music Assistant Alexa API add-on
 
 This maintained add-on packages the [Alexa skill service](https://github.com/timlaing/music-assistant-alexa-skill) for Home Assistant Supervisor on **aarch64** and **amd64**. Add `https://github.com/timlaing/music-assistant-alexa-api` to the Add-on Store repositories and install **Music Assistant Alexa API add-on**. The development wrapper bundled in the skill repository is a separate deployment.
 
