@@ -1,5 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.2
+
+- Declare the add-on stage as stable, so the Add-on Store no longer lists it as experimental.
+
+- Replace the add-on store README with an overview, installation steps, a quick start and support links.
+- Update the bundled skill to 1.3.2, which fixes the standalone image build workflow and refreshes documentation wording; no application changes.
+
 ## 1.3.1
 
 - Fix personal-skill deployment for the es-ES, es-MX, fr-FR and it-IT locales, which failed final package verification with "Amazon's exported package differs from the approved deployment" (#40).
