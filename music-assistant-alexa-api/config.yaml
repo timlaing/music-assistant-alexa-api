@@ -7,8 +7,6 @@ url: "https://github.com/timlaing/music-assistant-alexa-api/tree/main/music-assi
 arch:
   - aarch64
   - amd64
-# Add-on Store maturity label; the Supervisor defaults to experimental.
-stage: stable
 init: false
 # Migration-only compatibility: edit application settings in ingress Setup.
 # Preserve legacy values through the first migration release.

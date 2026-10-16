@@ -2,8 +2,6 @@
 
 ## 1.3.2
 
-- Declare the add-on stage as stable, so the Add-on Store no longer lists it as experimental.
-
 - Replace the add-on store README with an overview, installation steps, a quick start and support links.
 - Update the bundled skill to 1.3.2, which fixes the standalone image build workflow and refreshes documentation wording; no application changes.
 
