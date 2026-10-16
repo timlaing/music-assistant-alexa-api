@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.1
+
+- Fix personal-skill deployment for the es-ES, es-MX, fr-FR and it-IT locales, which failed final package verification with "Amazon's exported package differs from the approved deployment" (#40).
+
+- Update the bundled skill to 1.3.1, which includes the custom slot type list in every bundled interaction model so Amazon's export matches the approved package.
+
 ## 1.3.0
 
 - Promote the personal-skill deployment wizard to stable following maintainer confirmation that it is tested and working.
