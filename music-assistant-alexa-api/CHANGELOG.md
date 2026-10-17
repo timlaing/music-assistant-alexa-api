@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.4
+
+- Update the bundled skill to 1.3.4: package verification no longer fails on `smallIconUri`/`largeIconUri`, which Amazon rewrites during import and export — this was the remaining cause of "Amazon's exported package differs from the approved deployment" reported for es-ES and en-GB; every other field stays fully verified. No add-on changes.
+
 ## 1.3.3
 
 - Update the bundled skill to 1.3.3: a failed package verification now names the differing files and JSON paths, the fr-CA and nl-NL interaction models are converted to the current schema with invocation names and a PlayAudio intent, nl-NL gains a manifest entry, and every bundled locale round-trips a full deployment in the test suite; no add-on changes.
