@@ -6,5 +6,9 @@
 __pycache__/
 *.py[cod]
 
+# Skill tests for container runs are checked out at the pinned release tag
+# (CI does this automatically; locally clone per AGENTS.md). Never commit.
+music-assistant-alexa-api/skill-api
+
 # Local implementation planning notes are not repository documentation.
 PERSONAL_SKILL_DEPLOYMENT_PLAN.md

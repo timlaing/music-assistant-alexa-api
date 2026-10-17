@@ -18,19 +18,27 @@ def test_addon_option_contract():
     assert config["schema"]["ma_api_token"] == "password?"
     assert "migration only" in labels["api_password"]["name"]
     assert set(config.get("schema", {})) <= set(labels)
-    run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
-    assert "PORT=5000" in run and "bashio::addon.port" not in run
-    assert "--workers 1 --worker-class gthread --threads 8" in run
-    assert "/data/.ask" in run and "/data/device_players.json" in run
-    assert 'log.info "Password' not in run
+    entrypoint = (ADDON / "rootfs/usr/local/bin/entrypoint.sh").read_text()
+    assert "PORT=5000" in entrypoint and "bashio::addon.port" not in entrypoint
+    assert "--workers 1 --worker-class gthread --threads 8" in entrypoint
+    assert "/data/.ask" in entrypoint and "/data/device_players.json" in entrypoint
+    assert 'log.info "Password' not in entrypoint
 
 
 def test_runtime_is_pinned():
     build = yaml.safe_load((ADDON / "build.yaml").read_text())
+    # Both arches share the multi-arch skill release image, pinned by tag and
+    # digest, and the Dockerfile default must stay in sync with build.yaml.
     assert all("@sha256:" in image for image in build["build_from"].values())
-    lines = (ADDON / "requirements.lock").read_text().splitlines()
-    assert all("==" in line for line in lines if line and not line.startswith("#"))
-    assert "gunicorn==26.2.0" in lines
+    assert all(
+        image.startswith("ghcr.io/timlaing/music-assistant-skill:v")
+        for image in build["build_from"].values()
+    )
+    assert len(set(build["build_from"].values())) == 1
+    dockerfile = (ADDON / "Dockerfile").read_text()
+    assert f"ARG BUILD_FROM={build['build_from']['aarch64']}" in dockerfile
+    # The add-on layer only adds the server on top of the skill image.
+    assert "gunicorn==26.2.0" in dockerfile
 
 
 def test_personal_deployment_option_and_logging_contract():
@@ -57,10 +65,10 @@ def test_personal_deployment_option_and_logging_contract():
     )
     assert "8099/tcp" not in config["ports"]
     assert "webui" not in config
-    run = (ADDON / "rootfs/etc/services.d/music-assistant-alexa-api/run").read_text()
-    assert "/data/app-settings.json" in run
-    assert "bashio::config" not in run
-    assert "AWS_DEFAULT_REGION" not in run
-    assert "/data/skill-deployment.json" in run
+    entrypoint = (ADDON / "rootfs/usr/local/bin/entrypoint.sh").read_text()
+    assert "/data/app-settings.json" in entrypoint
+    assert "bashio::config" not in entrypoint
+    assert "AWS_DEFAULT_REGION" not in entrypoint
+    assert "/data/skill-deployment.json" in entrypoint
     log_format = (ADDON / "gunicorn.conf.py").read_text()
     assert "%(U)s" in log_format and "%(r)s" not in log_format

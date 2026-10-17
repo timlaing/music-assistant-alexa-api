@@ -1,13 +1,13 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
+# Both arches share the multi-arch skill release image; it is cosign-signed by
+# the skill repo's docker-ghcr.yml and verified by this repo's CI before use.
+# The tag+digest here and in the Dockerfile ARG must stay identical — see
+# AGENTS.md for the bump recipe.
 build_from:
-  # Home Assistant signs the OCI indexes, not their platform child manifests.
-  # These indexes contain the same platform images validated for beta.1.
-  aarch64: ghcr.io/home-assistant/aarch64-base@sha256:265232fe91fb4271f75f17ebd4bb0749ab24fc8a64d8db38ddaccd460e9580ee
-  amd64: ghcr.io/home-assistant/amd64-base@sha256:db83d263152a02d6daf3415a73132b2386f43a03a9c248bdaabe047b067c8eea
+  aarch64: ghcr.io/timlaing/music-assistant-skill:v1.3.5@sha256:3ad6d9c472ca763fb3bede798888dab99a6fc754b2d86a7d2bd4614a750c4149
+  amd64: ghcr.io/timlaing/music-assistant-skill:v1.3.5@sha256:3ad6d9c472ca763fb3bede798888dab99a6fc754b2d86a7d2bd4614a750c4149
 labels:
   org.opencontainers.image.title: "Home Assistant Add-on: Music Assistant Alexa API add-on"
   org.opencontainers.image.description: "Music Assistant Alexa API add-on."
   org.opencontainers.image.source: "https://github.com/timlaing/music-assistant-alexa-api"
   org.opencontainers.image.licenses: "Apache License 2.0"
-args:
-  TEMPIO_VERSION: "2024.11.2"

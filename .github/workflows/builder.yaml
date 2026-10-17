@@ -39,7 +39,7 @@ jobs:
           changed=false
           while IFS= read -r file; do
             case "$file" in
-              music-assistant-alexa-api/.dockerignore|music-assistant-alexa-api/build.yaml|music-assistant-alexa-api/config.yaml|music-assistant-alexa-api/Dockerfile|music-assistant-alexa-api/requirements.lock|music-assistant-alexa-api/gunicorn.conf.py|music-assistant-alexa-api/rootfs/*|music-assistant-alexa-api/scripts/*|music-assistant-alexa-api/skill-api|tests/*|scripts/*|.github/workflows/*|requirements-test.txt|requirements_all.txt)
+              music-assistant-alexa-api/.dockerignore|music-assistant-alexa-api/build.yaml|music-assistant-alexa-api/config.yaml|music-assistant-alexa-api/Dockerfile|music-assistant-alexa-api/gunicorn.conf.py|music-assistant-alexa-api/rootfs/*|tests/*|scripts/*|.github/workflows/*|requirements-test.txt|requirements_all.txt)
                 changed=true ;;
             esac
           done <<< "$files"

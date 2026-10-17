@@ -1,5 +1,10 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.5
+
+- Update the bundled skill to 1.3.5: package verification now **validates** icon URIs instead of excluding them — a locale's `smallIconUri`/`largeIconUri` equal to the configured artwork or to Amazon's own materialized `file://assets/images/…` form passes, while a foreign URL, a cross-locale path or a missing key still fails — and stores Amazon's one-time re-encoded icon artwork (`assets/images/*IconUri.png`) into the approved package so the byte comparison never fails on it again. Verified with a full deployment against the live Amazon service; every non-artwork file keeps byte-for-byte verification. Fixes the remaining "Amazon's exported package differs from the approved deployment" failures of #40.
+- The add-on image now builds `FROM ghcr.io/timlaing/music-assistant-skill:v1.3.5` (the cosign-signed release image published by the skill repository) instead of compiling the skill from the `skill-api` git submodule. The image already ships the patched Python environment, ASK CLI and assets; the add-on layer contributes gunicorn, the ingress service entrypoint and the healthcheck. Identical application code — faster, reproducible builds and a one-line bump for future skill releases.
+
 ## 1.3.4
 
 - Update the bundled skill to 1.3.4: package verification no longer fails on `smallIconUri`/`largeIconUri`, which Amazon rewrites during import and export — this was the remaining cause of "Amazon's exported package differs from the approved deployment" reported for es-ES and en-GB; every other field stays fully verified. No add-on changes.

@@ -24,17 +24,33 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          submodules: recursive
           persist-credentials: false
       - uses: docker/setup-buildx-action@v4
-      - name: Build pinned image
+      - name: Resolve pinned image
+        id: pin
         env:
           ARCH: ${{ matrix.arch }}
-          PLATFORM: ${{ matrix.platform }}
         run: |
           base=$(ruby -ryaml -e "puts YAML.load_file('music-assistant-alexa-api/build.yaml')['build_from'][ENV['ARCH']]")
-          tempio=$(ruby -ryaml -e "puts YAML.load_file('music-assistant-alexa-api/build.yaml')['args']['TEMPIO_VERSION']")
-          docker build --platform "$PLATFORM" --build-arg BUILD_FROM="$base" --build-arg BUILD_ARCH="$ARCH" --build-arg TEMPIO_VERSION="$tempio" -t ma-alexa:test music-assistant-alexa-api
+          echo "base=$base" >> "$GITHUB_OUTPUT"
+          # The container tests also run the skill's own test suite against the
+          # shipped code; check it out at the release tag the image was built
+          # from so the tests always match the baked-in application.
+          ref="${base%@*}"
+          echo "skill_ref=${ref##*:}" >> "$GITHUB_OUTPUT"
+      - name: Check out skill tests at the pinned release tag
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: timlaing/music-assistant-alexa-skill
+          ref: ${{ steps.pin.outputs.skill_ref }}
+          path: music-assistant-alexa-api/skill-api
+          persist-credentials: false
+      - name: Build pinned image
+        env:
+          PLATFORM: ${{ matrix.platform }}
+          BASE: ${{ steps.pin.outputs.base }}
+        run: |
+          docker build --platform "$PLATFORM" --build-arg BUILD_FROM="$BASE" -t ma-alexa:test music-assistant-alexa-api
       - name: Test application and container lifecycle
         env:
           PLATFORM: ${{ matrix.platform }}

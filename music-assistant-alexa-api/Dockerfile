@@ -1,57 +1,18 @@
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
-# See the documentation for more information
-# This requires the submodule skill-api to be present
-
-ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base@sha256:1b29b917841ca169fa3bece7bb03ae366e9df94a4d382698796a44c5abb3f2b5
+# The application layer ships prebuilt: the skill image contains the Python
+# 3.12 environment (with the verifier/certvalidator patches applied), ASK CLI,
+# the skill code and the assets. This layer adds the add-on runtime glue.
+# The tag+digest here and in build.yaml must stay identical — see AGENTS.md.
+ARG BUILD_FROM=ghcr.io/timlaing/music-assistant-skill:v1.3.5@sha256:3ad6d9c472ca763fb3bede798888dab99a6fc754b2d86a7d2bd4614a750c4149
 FROM $BUILD_FROM
 
-# Execute during the build of the image
-ARG TEMPIO_VERSION BUILD_ARCH
-RUN \
-    curl -sSLf -o /usr/bin/tempio \
-    "https://github.com/home-assistant/tempio/releases/download/${TEMPIO_VERSION}/tempio_${BUILD_ARCH}"
+# Serve with gunicorn instead of the skill image's Flask dev server, using the
+# Home Assistant ingress log format from gunicorn.conf.py.
+RUN /app/venv/bin/pip install --no-cache-dir gunicorn==26.2.0
 
-# Install runtime and build dependencies. Retain ASK CLI for legacy manual
-# administration and fallback status checks; the web wizard uses SMAPI directly.
-RUN apk add --no-cache \
-        nodejs=24.18.1-r0 \
-        npm=11.12.1-r0 \
-        python3=3.14.8-r0 \
-        py3-pip \
-        py3-virtualenv && \
-    apk add --no-cache --virtual .build-dependencies \
-        build-base \
-        cargo \
-        libffi-dev \
-        openssl-dev \
-        python3-dev
-
-WORKDIR /app
-
-# Install dependencies before copying the application so source-only changes
-# can reuse the dependency layer.
-COPY requirements.lock /app/requirements.txt
-COPY scripts/patch_python_dependencies.py /tmp/patch_python_dependencies.py
-RUN python3 -m venv venv && \
-    . venv/bin/activate && \
-    pip install --no-cache-dir pip==26.2.1 && \
-    pip install --no-cache-dir -r requirements.txt && \
-    python /tmp/patch_python_dependencies.py && \
-    npm install --global ask-cli@2.30.7 && \
-    npm cache clean --force && \
-    apk del .build-dependencies && \
-    rm /tmp/patch_python_dependencies.py
-
-# Copy the complete refactored upstream application. Its setup tooling expects
-# the repository app directory at /app/app, so use a symlink rather than a
-# second copy of the Python modules.
-COPY skill-api/app /app/src
-COPY skill-api/assets /app/assets
-COPY skill-api/scripts /app/scripts
-RUN ln -s /app/src /app/app && \
-    chmod +x /app/scripts/*.sh
-
-# Copy the Home Assistant service definition last.
+# Add-on service definition. The skill image is Ubuntu-based and has no Home
+# Assistant base s6-overlay/bashio, so the service is a plain entrypoint
+# replacing the image CMD.
 COPY gunicorn.conf.py /app/gunicorn.conf.py
 COPY rootfs /
 
@@ -63,6 +24,8 @@ ENV LOCALE="en-US" \
     SKIP_URL_VALIDATION="false" \
     ENABLE_APL="false" \
     PYTHONFAULTHANDLER="1"
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl --fail --silent --output /dev/null "http://localhost:5000/health"

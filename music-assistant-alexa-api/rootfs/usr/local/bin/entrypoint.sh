@@ -1,6 +1,9 @@
-#!/usr/bin/with-contenv bashio
+#!/bin/sh
 # ==============================================================================
-# s6-overlay docs: https://github.com/just-containers/s6-overlay
+# Add-on service entrypoint.
+# The skill image has no Home Assistant base s6-overlay/bashio, so the service
+# environment and the gunicorn invocation live here (they previously lived in
+# rootfs/etc/services.d/music-assistant-alexa-api/run).
 # ==============================================================================
 set -e
 
@@ -13,7 +16,6 @@ export SKILL_DEPLOYMENT_PATH="/data/skill-deployment.json"
 export PYTHONFAULTHANDLER=1
 export HA_INGRESS_ENABLED=true
 
-## Run your program
 # The upstream application stores the current stream in memory, so it must run
 # as a single worker to keep push and playback requests consistent.
 exec /app/venv/bin/gunicorn --config /app/gunicorn.conf.py --workers 1 --worker-class gthread --threads 8 --access-logfile - --error-logfile - --capture-output app:app --chdir /app/src --bind "0.0.0.0:${PORT}" --bind "0.0.0.0:8099"

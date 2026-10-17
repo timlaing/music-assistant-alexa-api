@@ -1,1 +1,5 @@
--r music-assistant-alexa-api/requirements.lock
+# Development/test environment for the add-on repository itself. The
+# application dependencies ship inside the skill image (see AGENTS.md) and are
+# not installed on the host.
+pytest==9.1.1
+PyYAML==6.0.3

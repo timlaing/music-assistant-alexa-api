@@ -24,7 +24,6 @@ jobs:
     steps:
       - uses: actions/checkout@v7.0.1
         with:
-          submodules: recursive
           persist-credentials: false
       - name: Read pinned build settings
         id: settings
@@ -36,7 +35,6 @@ jobs:
             config = YAML.load_file("music-assistant-alexa-api/config.yaml")
             puts "version=#{config["version"]}"
             puts "base=#{build["build_from"][ENV["ARCH"]]}"
-            puts "tempio=#{build["args"]["TEMPIO_VERSION"]}"
             puts "labels<<EOF"
             puts "io.hass.type=addon"
             puts "io.hass.name=#{config["name"]}"
@@ -44,8 +42,10 @@ jobs:
             build["labels"].each { |key, value| puts "#{key}=#{value}" }
             puts "EOF"
           ' >> "$GITHUB_OUTPUT"
-      # The builder only verifies base signatures when publishing. Run the
-      # same strict check on PRs too, before allowing the build to pass.
+      # The base is the skill release image, cosign-signed keyless by the
+      # skill repo's docker-ghcr.yml. Verify that signature before building —
+      # on PRs as well as publishes, so an unsigned or foreign base is caught
+      # before it can reach the store.
       - name: Install Cosign for PR base verification
         if: ${{ !inputs.publish }}
         uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
@@ -56,7 +56,7 @@ jobs:
         uses: home-assistant/builder/actions/cosign-verify@7412f0023ea9b6e58e8bb5059f1660f51376f49a # 2026.09.0
         with:
           image: ${{ steps.settings.outputs.base }}
-          cosign-identity: https://github.com/home-assistant/docker-base/.*
+          cosign-identity: https://github.com/timlaing/music-assistant-alexa-skill/.*
           cosign-issuer: https://token.actions.githubusercontent.com
           allow-failure: false
       - name: Build and optionally publish add-on
@@ -73,7 +73,6 @@ jobs:
           cosign: ${{ inputs.publish }}
           container-registry-password: ${{ inputs.publish && secrets.GITHUB_TOKEN || '' }}
           cosign-base-verify: ${{ steps.settings.outputs.base }}
-          cosign-base-identity: https://github.com/home-assistant/docker-base/.*
+          cosign-base-identity: https://github.com/timlaing/music-assistant-alexa-skill/.*
           build-args: |
             BUILD_FROM=${{ steps.settings.outputs.base }}
-            TEMPIO_VERSION=${{ steps.settings.outputs.tempio }}
