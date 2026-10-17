@@ -1,5 +1,9 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.3
+
+- Update the bundled skill to 1.3.3: a failed package verification now names the differing files and JSON paths, the fr-CA and nl-NL interaction models are converted to the current schema with invocation names and a PlayAudio intent, nl-NL gains a manifest entry, and every bundled locale round-trips a full deployment in the test suite; no add-on changes.
+
 ## 1.3.2
 
 - Replace the add-on store README with an overview, installation steps, a quick start and support links.
