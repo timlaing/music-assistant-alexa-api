@@ -22,7 +22,7 @@ jobs:
           - arch: amd64
             runner: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7.0.1
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Read pinned build settings
@@ -60,7 +60,7 @@ jobs:
           cosign-issuer: https://token.actions.githubusercontent.com
           allow-failure: false
       - name: Build and optionally publish add-on
-        uses: home-assistant/builder/actions/build-image@2026.09.0
+        uses: home-assistant/builder/actions/build-image@7412f0023ea9b6e58e8bb5059f1660f51376f49a # 2026.09.0
         with:
           arch: ${{ matrix.arch }}
           context: music-assistant-alexa-api

@@ -19,9 +19,11 @@ def test_addon_option_contract():
     assert "migration only" in labels["api_password"]["name"]
     assert set(config.get("schema", {})) <= set(labels)
     entrypoint = (ADDON / "rootfs/usr/local/bin/entrypoint.sh").read_text()
-    assert "PORT=5000" in entrypoint and "bashio::addon.port" not in entrypoint
+    assert "PORT=5000" in entrypoint
+    assert "bashio::addon.port" not in entrypoint
     assert "--workers 1 --worker-class gthread --threads 8" in entrypoint
-    assert "/data/.ask" in entrypoint and "/data/device_players.json" in entrypoint
+    assert "/data/.ask" in entrypoint
+    assert "/data/device_players.json" in entrypoint
     assert 'log.info "Password' not in entrypoint
 
 
@@ -57,7 +59,8 @@ def test_personal_deployment_option_and_logging_contract():
         "locale",
         "skip_url_validation",
     }
-    assert config["ingress"] and config.get("ingress_port", 8099) == 8099
+    assert config["ingress"]
+    assert config.get("ingress_port", 8099) == 8099
     assert config["ingress_entry"] == "status"
     # Supervisor appends the configured entry to an ingress URL ending in /.
     assert "/api/hassio_ingress/session/" + config["ingress_entry"] == (
@@ -71,4 +74,5 @@ def test_personal_deployment_option_and_logging_contract():
     assert "AWS_DEFAULT_REGION" not in entrypoint
     assert "/data/skill-deployment.json" in entrypoint
     log_format = (ADDON / "gunicorn.conf.py").read_text()
-    assert "%(U)s" in log_format and "%(r)s" not in log_format
+    assert "%(U)s" in log_format
+    assert "%(r)s" not in log_format

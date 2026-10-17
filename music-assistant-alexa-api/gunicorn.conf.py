@@ -4,7 +4,7 @@ import signal
 import sys
 
 
-def worker_exit(server, worker):
+def worker_exit(_server, _worker):
     module = sys.modules.get("app")
     if module is not None:
         module.shutdown_setup_children(signal.SIGTERM)
