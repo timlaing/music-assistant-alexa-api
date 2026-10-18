@@ -1,5 +1,22 @@
 # Music Assistant Alexa API add-on repository
 
+[![Test](https://github.com/timlaing/music-assistant-alexa-api/actions/workflows/test.yml/badge.svg)](https://github.com/timlaing/music-assistant-alexa-api/actions/workflows/test.yml)
+[![Lint](https://github.com/timlaing/music-assistant-alexa-api/actions/workflows/lint.yaml/badge.svg)](https://github.com/timlaing/music-assistant-alexa-api/actions/workflows/lint.yaml)
+[![License](https://img.shields.io/github/license/timlaing/music-assistant-alexa-api)](LICENSE)
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=coverage)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=bugs)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=timlaing_music-assistant-alexa-api&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=timlaing_music-assistant-alexa-api)
+
 This repository packages the [Music Assistant Alexa skill service](https://github.com/timlaing/music-assistant-alexa-skill) as a maintained Home Assistant Supervisor add-on. Install this repository for Home Assistant; use the skill repository for application development or standalone Docker deployment.
 
 Stable **1.2.0** includes the merged [add-on fixes](https://github.com/timlaing/music-assistant-alexa-api/pull/28), [skill fixes](https://github.com/timlaing/music-assistant-alexa-skill/pull/1) and [publication repair](https://github.com/timlaing/music-assistant-alexa-api/pull/29). The maintainer confirmed playback works on a real Alexa device with the Nginx Proxy Manager configuration on 3 October 2026. Automated validation passed 46 combined tests and HTTP/concurrency/shutdown checks in ARM64 and AMD64 containers, plus lint, CodeQL and image builds. This confirmation covers the tested installation; it does not establish compatibility with every device or validate every optional feature.
@@ -28,17 +45,17 @@ For stable **1.3.0**, open the add-on **Web UI → Setup** through Home Assistan
 
 Existing values are imported once from available legacy `/data/options.json` values and environment variables into `/data/app-settings.json`; later saves and restarts use that file. Secrets stay masked, with an explicit **Show current API password** action for connecting Music Assistant. Saving applies locally without deploying to Amazon. The unused AWS region option is removed. Persist and protect `/data` backups.
 
-| Name | Description | Required |
-| ---- | ----------- | -------- |
-| Music Assistant Hostname | The external hostname, port and root URI to be used for Streams | Y |
-| Alexa Skill Hostname | Optional override for the public HTTPS skill endpoint; defaults to the public audio URL origin plus `/ma-alexa-skill/` | N |
-| API Username | The username to be provided to Music Assistant for communication to this API, defaults to (ma-local-alexa-api) | Y |
-| API Password | The password to be provided to Music Assistant for communication to this API, if blank on start one will be generated | N |
-| Alexa Skill Locale | The locale used by the skill setup flow, defaults to en-US | N |
-| Skip Stream URL Validation | Skip the external stream reachability check when local network routing prevents it | N |
-| Music Assistant Control API URL | optional local MA API address for mapped voice controls | N |
-| Music Assistant API Token | access token for the MA control API | N |
-| Enable Echo Show Display | opt into APL display; defaults to false | N |
+| Name                            | Description                                                                                                            | Required |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------- |
+| Music Assistant Hostname        | The external hostname, port and root URI to be used for Streams                                                        | Y        |
+| Alexa Skill Hostname            | Optional override for the public HTTPS skill endpoint; defaults to the public audio URL origin plus `/ma-alexa-skill/` | N        |
+| API Username                    | The username to be provided to Music Assistant for communication to this API, defaults to (ma-local-alexa-api)         | Y        |
+| API Password                    | The password to be provided to Music Assistant for communication to this API, if blank on start one will be generated  | N        |
+| Alexa Skill Locale              | The locale used by the skill setup flow, defaults to en-US                                                             | N        |
+| Skip Stream URL Validation      | Skip the external stream reachability check when local network routing prevents it                                     | N        |
+| Music Assistant Control API URL | optional local MA API address for mapped voice controls                                                                | N        |
+| Music Assistant API Token       | access token for the MA control API                                                                                    | N        |
+| Enable Echo Show Display        | opt into APL display; defaults to false                                                                                | N        |
 
 ### Alexa API
 
@@ -51,10 +68,10 @@ Nginx Proxy Manager can provide both. Forward external HTTPS port **443** to
 NPM; keep add-on port **5000** and Music Assistant stream port **8097** internal.
 Direct internet forwarding of those two application ports is unnecessary.
 
-| Address | NPM upstream | Setup setting |
-| --- | --- | --- |
-| `https://alexa.example.com` | `http://<HA-LAN-IP>:5000` | `skill_hostname` |
-| `https://streams.example.com` | `http://<MA-LAN-IP>:8097` | `ma_hostname` |
+| Address                       | NPM upstream              | Setup setting    |
+| ----------------------------- | ------------------------- | ---------------- |
+| `https://alexa.example.com`   | `http://<HA-LAN-IP>:5000` | `skill_hostname` |
+| `https://streams.example.com` | `http://<MA-LAN-IP>:8097` | `ma_hostname`    |
 
 Set Music Assistant's Alexa provider **API URL** to `http://<HA-LAN-IP>:5000`
 without `/ma`. Configure its Basic Auth fields with the add-on API credentials.
@@ -64,16 +81,16 @@ must accept signed POST requests without an additional NPM login/access list.
 
 For a shared public hostname, configure these NPM custom locations. Stream routes preserve their full paths; the skill route strips its prefix.
 
-| NPM location | Forward to | Path handling | When needed |
-| --- | --- | --- | --- |
-| `/ma-alexa-skill/` | `http://<HA-LAN-IP>:5000` | Strip `/ma-alexa-skill/`; forward to the add-on root. | Skill requests and Amazon setup callback. |
-| `/flow/` | `http://<MA-LAN-IP>:8097` | Preserve the full path. | Music Assistant queue streams. |
-| `/pluginsource/` | `http://<MA-LAN-IP>:8097` | Preserve the full path. | Plugin audio streams using this route. |
-| `/source/` | `http://<MA-LAN-IP>:8097` | Preserve the full path. | Live sources, including iPhone audio via AirPlay Receiver. |
-| `/announcement/` | `http://<MA-LAN-IP>:8097` | Preserve the full path. | Announcement audio using this route. |
-| `/imageproxy/` | `http://<MA-LAN-IP>:8097` | Preserve the full path. | Music Assistant artwork. |
-| `/alexa/` | `http://<HA-LAN-IP>:5000` | Preserve the full path, including `/alexa/intents`. | Only if Music Assistant's Alexa provider API URL uses this public hostname. |
-| `/ma/` | `http://<HA-LAN-IP>:5000` | Preserve the full path, including `/ma/push-url`. | Only if Music Assistant's Alexa provider API URL uses this public hostname. |
+| NPM location       | Forward to                | Path handling                                         | When needed                                                                 |
+| ------------------ | ------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------- |
+| `/ma-alexa-skill/` | `http://<HA-LAN-IP>:5000` | Strip `/ma-alexa-skill/`; forward to the add-on root. | Skill requests and Amazon setup callback.                                   |
+| `/flow/`           | `http://<MA-LAN-IP>:8097` | Preserve the full path.                               | Music Assistant queue streams.                                              |
+| `/pluginsource/`   | `http://<MA-LAN-IP>:8097` | Preserve the full path.                               | Plugin audio streams using this route.                                      |
+| `/source/`         | `http://<MA-LAN-IP>:8097` | Preserve the full path.                               | Live sources, including iPhone audio via AirPlay Receiver.                  |
+| `/announcement/`   | `http://<MA-LAN-IP>:8097` | Preserve the full path.                               | Announcement audio using this route.                                        |
+| `/imageproxy/`     | `http://<MA-LAN-IP>:8097` | Preserve the full path.                               | Music Assistant artwork.                                                    |
+| `/alexa/`          | `http://<HA-LAN-IP>:5000` | Preserve the full path, including `/alexa/intents`.   | Only if Music Assistant's Alexa provider API URL uses this public hostname. |
+| `/ma/`             | `http://<HA-LAN-IP>:5000` | Preserve the full path, including `/ma/push-url`.     | Only if Music Assistant's Alexa provider API URL uses this public hostname. |
 
 A dedicated stream hostname forwarding all paths to **8097** already covers the stream locations and needs no extra custom locations. A dedicated add-on hostname forwarding all paths to **5000** already covers `/alexa/` and `/ma/`; keep the core `/ma-alexa-skill/` route for the Amazon setup callback. `/status` and `/setup` are provided through Home Assistant ingress and need no public NPM locations.
 
