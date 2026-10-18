@@ -55,6 +55,6 @@ jobs:
         env:
           ADDON_PATH: ${{ matrix.path }}
         run: |
-          python3 scripts/allow_digest_images.py .addon-linter/src/build.schema.json
+          python3 scripts/allow_digest_images.py
           docker build -t addon-linter .addon-linter/src
           docker run --rm -v "$PWD:/github/workspace:ro" -e INPUT_PATH="/github/workspace/$ADDON_PATH" -e INPUT_COMMUNITY=false addon-linter

@@ -6,9 +6,9 @@ from pathlib import Path
 
 # The only file this script may touch is the linter's build schema inside the
 # pinned frenck/action-addon-linter checkout (.addon-linter/src at the repo
-# root, per .github/workflows/lint.yaml). Restrict both the filename and the
-# containing directory so a stray argument can never redirect the read/write
-# (S2083: argv-derived paths must not reach file sinks unvalidated).
+# root, per .github/workflows/lint.yaml). The location is derived from the
+# working directory and never taken from an argument, so no user input can
+# reach the read/write sinks (S2083: argv-derived paths must not).
 SCHEMA_DIR = Path(".addon-linter") / "src"
 SCHEMA_NAME = "build.schema.json"
 
@@ -24,31 +24,25 @@ def extend_schema(schema):
     return schema
 
 
-def resolve_schema_path(arg, cwd=None):
-    """Resolve *arg* to the linter schema, refusing anything else.
-
-    Both the basename and the containing directory must match the pinned
-    checkout layout; resolves symlinks and relative segments before checking,
-    and returns the constant-derived expected path rather than the
-    argv-derived one so user input never reaches the read/write sinks
-    (S2083: the two only differ when the check above has passed).
-    """
+def schema_path(cwd=None):
+    """The pinned linter schema under *cwd*, or None when it is absent."""
     base = Path(cwd) if cwd is not None else Path.cwd()
-    expected = (base / SCHEMA_DIR / SCHEMA_NAME).resolve()
-    candidate = (base / arg).resolve()
-    if candidate != expected or not expected.is_file():
-        sys.exit(f"refusing to patch unexpected file: {candidate}")
-    return expected
+    path = base / SCHEMA_DIR / SCHEMA_NAME
+    if not path.is_file():
+        return None
+    return path.resolve()
 
 
-def main(argv):
-    """CLI entry point; exits non-zero if the argument is refused."""
-    if len(argv) != 2:
-        sys.exit(f"usage: {argv[0]} <path-to-build.schema.json>")
-    path = resolve_schema_path(argv[1])
+def main():
+    path = schema_path()
+    if path is None:
+        sys.exit(
+            "refusing to patch: run from the repository root with the pinned "
+            f"{SCHEMA_DIR / SCHEMA_NAME} checkout present"
+        )
     schema = extend_schema(json.loads(path.read_text()))
     path.write_text(json.dumps(schema, indent=2) + "\n")
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
