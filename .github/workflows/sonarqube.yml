@@ -13,7 +13,6 @@ jobs:
     permissions:
       actions: read
       contents: read
-      pull-requests: write
     env:
       SONAR_HOST_URL: https://sonarcloud.io
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -51,6 +50,9 @@ jobs:
         env:
           HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
           RUN_EVENT: ${{ github.event.workflow_run.event }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          PR_HEAD_REF: ${{ github.event.workflow_run.pull_requests[0].head.ref }}
+          PR_BASE_REF: ${{ github.event.workflow_run.pull_requests[0].base.ref }}
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
@@ -59,7 +61,8 @@ jobs:
           if [[ "$RUN_EVENT" != "pull_request" ]]; then
             exit 0
           fi
-          PR_NUMBER="${{ github.event.workflow_run.pull_requests[0].number }}"
+          HEAD_REF="$PR_HEAD_REF"
+          BASE_REF="$PR_BASE_REF"
           if [[ -z "$PR_NUMBER" ]]; then
             # workflow_run.pull_requests is empty for fork PRs; resolve via the API.
             PR_FILE="$(mktemp)"
@@ -70,9 +73,6 @@ jobs:
               HEAD_REF="$(jq -r '.headRefName' <<< "$PR_MATCH")"
               BASE_REF="$(jq -r '.baseRefName' <<< "$PR_MATCH")"
             fi
-          else
-            HEAD_REF="${{ github.event.workflow_run.pull_requests[0].head.ref }}"
-            BASE_REF="${{ github.event.workflow_run.pull_requests[0].base.ref }}"
           fi
           if [[ -z "$PR_NUMBER" || -z "$HEAD_REF" || -z "$BASE_REF" ]]; then
             echo "Could not resolve pull request metadata for $HEAD_SHA"; exit 1
