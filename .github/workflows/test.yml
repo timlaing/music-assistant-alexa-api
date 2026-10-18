@@ -28,13 +28,15 @@ jobs:
           .venv/bin/pip install --upgrade pip
           .venv/bin/pip install -r requirements-test.txt
 
-      # These tests validate the add-on's YAML/contract surface rather than
-      # exercise application code (the app ships inside the skill image), so
-      # coverage is measured for reporting only and gates nothing.
+      # These tests validate the add-on's YAML/contract surface and the
+      # linter-patch helper rather than exercise application code (the app
+      # ships inside the skill image), so coverage is measured for reporting
+      # and gates nothing.
       - name: Run tests with coverage
         run: |
           .venv/bin/python -m pytest tests/ \
             --cov=tests \
+            --cov=scripts \
             --cov-branch \
             --cov-report=term-missing \
             --cov-report=xml:coverage.xml
