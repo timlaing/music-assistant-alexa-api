@@ -40,9 +40,14 @@ def resolve_schema_path(arg, cwd=None):
     return candidate
 
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        sys.exit(f"usage: {sys.argv[0]} <path-to-build.schema.json>")
-    path = resolve_schema_path(sys.argv[1])
+def main(argv):
+    """CLI entry point; exits non-zero if the argument is refused."""
+    if len(argv) != 2:
+        sys.exit(f"usage: {argv[0]} <path-to-build.schema.json>")
+    path = resolve_schema_path(argv[1])
     schema = extend_schema(json.loads(path.read_text()))
     path.write_text(json.dumps(schema, indent=2) + "\n")
+
+
+if __name__ == "__main__":
+    main(sys.argv)

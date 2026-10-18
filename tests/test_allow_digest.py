@@ -113,3 +113,23 @@ def test_cli_refuses_unexpected_path(tmp_path):
     assert result.returncode != 0
     assert "refusing to patch" in result.stderr
     assert json.loads(evil.read_text()) == {}
+
+
+def test_main_patches_in_process(tmp_path, monkeypatch):
+    schema_file = tmp_path / ".addon-linter" / "src" / "build.schema.json"
+    schema_file.parent.mkdir(parents=True)
+    schema_file.write_text(json.dumps(_upstream_like_schema()))
+    monkeypatch.chdir(tmp_path)
+    allow_digest_images.main(
+        ["allow_digest_images.py", ".addon-linter/src/build.schema.json"]
+    )
+    patched = json.loads(schema_file.read_text())
+    assert patched["properties"]["build_from"]["anyOf"][1]["pattern"].endswith(
+        "(@sha256:[a-f0-9]{64})?$"
+    )
+
+
+def test_main_usage_error():
+    with pytest.raises(SystemExit) as excinfo:
+        allow_digest_images.main(["allow_digest_images.py"])
+    assert "usage:" in str(excinfo.value)
