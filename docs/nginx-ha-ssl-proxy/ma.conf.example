@@ -1,0 +1,34 @@
+# OPTIONAL: separate subdomain for direct Music Assistant web/API access.
+#
+# Installed at /share/nginx_proxy/ma.conf (matched by the add-on's
+# customize.servers glob, nginx_proxy/*.conf, and included at http level,
+# hence the full server block). NOT required for Alexa playback - the stream
+# routes in nginx_proxy_default.conf already cover that. Only needed if you
+# want Music Assistant's own UI/API on a public hostname.
+#
+# Requires a certificate in /ssl covering this hostname (for example a
+# wildcard cert); the add-on's certfile setting only covers the main domain.
+#
+# Note the port: 8095 is Music Assistant's control API/web UI. Audio
+# streams use 8097 and stay on the main domain's /flow/ routes.
+
+server {
+    listen 443 ssl;
+    http2 on;
+    server_name ma.example.com;
+
+    ssl_certificate /ssl/fullchain.pem;
+    ssl_certificate_key /ssl/privkey.pem;
+
+    proxy_buffering off;
+
+    location / {
+        proxy_pass http://<MA_LAN_IP>:8095;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_http_version 1.1;
+        proxy_read_timeout 3600s;
+        proxy_send_timeout 3600s;
+    }
+}
