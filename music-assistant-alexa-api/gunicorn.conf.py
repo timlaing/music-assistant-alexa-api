@@ -3,6 +3,15 @@
 import signal
 import sys
 
+# aiohttp's default connection pool keeps idle connections for 15s, while
+# gunicorn's default keepalive is only 2s. A request (especially a POST,
+# which aiohttp never retries) on a pooled connection gunicorn already
+# closed fails with "Server disconnected" or "Connection reset by peer" -
+# seen as first-attempt playback failures from Music Assistant, where the
+# retry on a fresh connection succeeds (issue #55). 75s exceeds any client
+# pool timeout.
+keepalive = 75
+
 
 def worker_exit(_server, _worker):
     module = sys.modules.get("app")
