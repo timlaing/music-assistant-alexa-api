@@ -28,16 +28,17 @@ def resolve_schema_path(arg, cwd=None):
     """Resolve *arg* to the linter schema, refusing anything else.
 
     Both the basename and the containing directory must match the pinned
-    checkout layout; resolves symlinks and relative segments before checking.
+    checkout layout; resolves symlinks and relative segments before checking,
+    and returns the constant-derived expected path rather than the
+    argv-derived one so user input never reaches the read/write sinks
+    (S2083: the two only differ when the check above has passed).
     """
     base = Path(cwd) if cwd is not None else Path.cwd()
-    schema_dir = (base / SCHEMA_DIR).resolve()
+    expected = (base / SCHEMA_DIR / SCHEMA_NAME).resolve()
     candidate = (base / arg).resolve()
-    if candidate.name != SCHEMA_NAME or candidate.parent != schema_dir:
+    if candidate != expected or not expected.is_file():
         sys.exit(f"refusing to patch unexpected file: {candidate}")
-    if not candidate.is_file():
-        sys.exit(f"refusing to patch unexpected file: {candidate}")
-    return candidate
+    return expected
 
 
 def main(argv):
