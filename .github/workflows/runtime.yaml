@@ -38,6 +38,24 @@ jobs:
           # from so the tests always match the baked-in application.
           ref="${base%@*}"
           echo "skill_ref=${ref##*:}" >> "$GITHUB_OUTPUT"
+      # The two steps below check out and then *execute* the skill repo's test
+      # suite, so the release tag parsed out of build.yaml has to be treated as
+      # untrusted input: a moved, foreign or unsigned tag would otherwise run
+      # arbitrary code on this runner. Verify the cosign signature on the
+      # digest-pinned base image — signed keyless by the skill repo's release
+      # workflow — before any of that code is checked out or run. This mirrors
+      # the verification image.yaml already performs before building.
+      - name: Install Cosign for base image verification
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        with:
+          cosign-release: v3.0.6
+      - name: Verify base image signature before running skill tests
+        uses: home-assistant/builder/actions/cosign-verify@7412f0023ea9b6e58e8bb5059f1660f51376f49a # 2026.09.0
+        with:
+          image: ${{ steps.pin.outputs.base }}
+          cosign-identity: https://github.com/timlaing/music-assistant-alexa-skill/.*
+          cosign-issuer: https://token.actions.githubusercontent.com
+          allow-failure: false
       - name: Check out skill tests at the pinned release tag
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
