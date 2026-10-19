@@ -94,6 +94,7 @@ jobs:
             -Dsonar.projectName=music-assistant-alexa-api
             -Dsonar.sources=music-assistant-alexa-api,scripts,.github/workflows
             -Dsonar.exclusions=**/skill-api/**
+            -Dsonar.coverage.exclusions=**/gunicorn.conf.py
             -Dsonar.tests=tests
             -Dsonar.python.coverage.reportPaths=.coverage/coverage.xml
             -Dsonar.python.version=3.14
@@ -110,6 +111,7 @@ jobs:
             -Dsonar.projectName=music-assistant-alexa-api
             -Dsonar.sources=music-assistant-alexa-api,scripts,.github/workflows
             -Dsonar.exclusions=**/skill-api/**
+            -Dsonar.coverage.exclusions=**/gunicorn.conf.py
             -Dsonar.tests=tests
             -Dsonar.python.coverage.reportPaths=.coverage/coverage.xml
             -Dsonar.python.version=3.14
