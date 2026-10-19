@@ -1,11 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
-## 1.3.6-beta.1
+## 1.3.6
 
-- **Beta — for testing only.** The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.4.1-beta.1` (cosign-signed), which carries the runtime modernization (Ubuntu 26.04, Python 3.14, Node 26) and the skill fix for stale one-shot flow-stream URLs: after an idle period the skill now validates the stored stream URL, asks Music Assistant to resume the player and plays the pushed replacement URL instead of serving a 404 to Alexa (skill PR #31, addressing the playback failures reported in #40).
+- The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.4.1` (cosign-signed), which carries the runtime modernization (Ubuntu 26.04, Python 3.14, Node 26) and the skill fix for stale one-shot flow-stream URLs: after an idle period the skill now validates the stored stream URL, asks Music Assistant to resume the player and plays the pushed replacement URL instead of serving a 404 to Alexa (skill PR #31, addressing the playback failures reported in #40).
 - Raise the gunicorn keepalive so it outlives client connection pools, fixing the first-attempt `Server disconnected` playback failures on the add-on-facing half of #55 (the `players/cmd/play_pause` path is MA-side via alexapy and is not addressed here).
 - Document an NGINX Home Assistant SSL proxy example configuration (#60).
 - Maintenance: CI and Sonar analysis run on Python 3.14 (#63); gunicorn.conf.py is excluded from Sonar coverage and remaining coverage exclusions passed as inline scanner args (#64, #65).
+
+Validated as 1.3.6-beta.1 before this release.
 
 ## 1.3.5
 
