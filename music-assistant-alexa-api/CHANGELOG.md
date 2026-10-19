@@ -1,5 +1,10 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.7-beta.1
+
+- **Beta — for testing only.** The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.4.2-beta.1` (cosign-signed), which restructures the skill's setup UI into a four-step wizard with global navigation and adds a test-audio player on the reachability page (skill PR #32).
+- Maintenance: CI cosign-verifies the pinned skill image signature before checking out the skill repository to run its test suite (#68).
+
 ## 1.3.6
 
 - The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.4.1` (cosign-signed), which carries the runtime modernization (Ubuntu 26.04, Python 3.14, Node 26) and the skill fix for stale one-shot flow-stream URLs: after an idle period the skill now validates the stored stream URL, asks Music Assistant to resume the player and plays the pushed replacement URL instead of serving a 404 to Alexa (skill PR #31, addressing the playback failures reported in #40).
