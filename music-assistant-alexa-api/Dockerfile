@@ -3,7 +3,7 @@
 # 3.12 environment (with the verifier/certvalidator patches applied), ASK CLI,
 # the skill code and the assets. This layer adds the add-on runtime glue.
 # The tag+digest here and in build.yaml must stay identical — see AGENTS.md.
-ARG BUILD_FROM=ghcr.io/timlaing/music-assistant-skill:v1.4.2-beta.1@sha256:faa223c9bd2031e26a5c7921cae84e93b73c00c4db1348ba1232e1b4102b583a
+ARG BUILD_FROM=ghcr.io/timlaing/music-assistant-skill:v1.4.2-beta.2@sha256:3444e54e51a326f3d17ac5fc3c3d801cbeb2f816a822e5940c87337df776e137
 FROM $BUILD_FROM
 
 # Serve with gunicorn instead of the skill image's Flask dev server, using the
