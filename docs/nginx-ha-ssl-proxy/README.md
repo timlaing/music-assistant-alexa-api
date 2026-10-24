@@ -58,6 +58,21 @@ for a standalone nginx install instead of the add-on.
 
    Restart Home Assistant. Without this the UI returns `400 Bad Request`.
 
+   One reported setup (issue #40) additionally needed the loopback, LAN
+   and Docker networks trusted before proxied requests — notably the
+   streams URL endpoint — were accepted. Equivalent in the UI under
+   **Settings → System → Network → HTTP server → Reverse proxy**:
+
+   ```yaml
+   http:
+     use_x_forwarded_for: true
+     trusted_proxies:
+       - 127.0.0.1/32 # loopback
+       - ::1/128 # IPv6 loopback
+       - 192.168.0.0/16 # your LAN range
+       - 172.0.0.0/8 # Docker networks (includes 172.30.33.0/24)
+   ```
+
 7. Start the add-on and check its log for configuration errors.
 
 ## Add-on and Music Assistant settings
