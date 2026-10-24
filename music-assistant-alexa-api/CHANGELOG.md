@@ -1,5 +1,16 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.7-beta.3
+
+- **Beta — for testing only.** The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.5.0-beta.1` (cosign-signed).
+- Spoken music selection and queue commands: ask for a song, artist, album, playlist, radio station or favourites; queue, shuffle, insert next and favourite the current track; and hear what is playing, next and previous (skill PR #38). Requires the Music Assistant control API URL and token for library and favourites changes. `en-US` only; other locales are unchanged.
+- Playback position: the add-on now serves `GET /alexa/playback-state?player_id=…` behind the API credentials, reporting where each Echo really is so Music Assistant's Alexa player no longer drifts ahead of the device with every voice command (skill PR #38). Pairs with Music Assistant server change music-assistant/server#7143.
+- Package verification accepts Amazon exports that omit the optional `skill-package/` wrapper, fixing the deployment failure reported against 1.3.7-beta.2 where every member path differed and the whole package was rejected as a mismatch (skill PR #37).
+- Only requests from the deployed skill are accepted: the endpoint rejects correctly-signed requests from any other Alexa skill with the same endpoint, and fails closed until a deployment has been verified (skill PR #36).
+- A diagnostics download and read-only Music Assistant channel verification (checks V1–V11) are available from the status page, for the "skill answers but the Echo stays silent" reports in #40 and #71 (skill PR #35).
+- Setup now collects the public skill endpoint on **Application settings**, before the step that displays the Amazon callback URL derived from it. The callback URL is derived from the skill endpoint rather than the audio URL, and step 3 no longer collects a value that could silently override an endpoint already registered with Amazon (skill PR #39, addressing points 3 and 4 of @Rob-SBT's report in #40).
+- Document the #40 setup findings: the Alexa locale must match the locale registered to the Echo devices, the Amazon callback URL follows the public skill endpoint, the reverse-proxy `trusted_proxies` ranges one setup needed, and a troubleshooting sequence for "the skill answers but the Echo stays silent" (#72).
+
 ## 1.3.7-beta.2
 
 - **Beta — for testing only.** The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.4.2-beta.2` (cosign-signed), which lands the redesigned web UI: eight views on a shared page shell, static assets served from `/assets` with per-use revalidation, and an error fallback on the Devices page that keeps device mapping available (skill PR #34).
