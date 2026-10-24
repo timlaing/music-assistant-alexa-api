@@ -1,5 +1,14 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.7-beta.4
+
+- **Beta — for testing only.** Update the bundled skill to the cosign-signed `v1.5.0-beta.2` image.
+- Use consistent field styling across setup and simulator pages.
+- Show recorded HTTP response statuses in the Invocations desktop table and mobile cards; malformed log entries remain readable.
+- Update Echo playback from accepted device callbacks, showing the last reported state, device and time. Simulator requests are excluded, and callback timestamps prevent delayed events from replacing newer playback states.
+- Treat HTTP 405 as reachable for the Stream host HEAD check, supporting Home Assistant roots that only accept GET. Skill and audio checks retain their stricter response checks.
+- Clarify that Echo Show track metadata appears in Metadata diagnostics.
+
 ## 1.3.7-beta.3
 
 - **Beta — for testing only.** The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.5.0-beta.1` (cosign-signed).
