@@ -1,5 +1,11 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.7-beta.5
+
+- **Beta — for testing only.** Update the bundled skill to the cosign-signed `v1.5.0-beta.3` image.
+- Give each Echo the stream pushed for its own player: with several Echos on separate queues, stale-stream recovery and the APL metadata refresh no longer pick up another player's stream, so the wrong queue no longer starts playing and another Echo's track no longer appears on this one's card (skill PR #41, fixes skill issue #33).
+- Choose the Music Assistant player from a list on the Devices page: the player field becomes a dropdown of Music Assistant's own players labelled by display name, a saved id Music Assistant no longer reports is kept, an id that is not a listed player is rejected with the previous mapping untouched, and the free-text field remains as a fallback when Music Assistant is unreachable (skill PR #42). The long Alexa device id now truncates instead of stretching the card grid.
+
 ## 1.3.7-beta.4
 
 - **Beta — for testing only.** Update the bundled skill to the cosign-signed `v1.5.0-beta.2` image.
