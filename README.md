@@ -146,3 +146,13 @@ Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to pr
 5. **Verify the proxy forwards the full stream path.** `/flow/`, `/pluginsource/`, `/source/`, `/announcement/` and `/imageproxy/` must all preserve their full paths to port **8097**. A location that strips a prefix, or one that exists for the skill route only, silently breaks audio while the skill endpoint stays healthy.
 6. **Trust the proxy's client address.** If requests traverse a reverse proxy, Home Assistant must trust its `X-Forwarded-For` or proxied requests are rejected. See the [NGINX Home Assistant SSL proxy example](./docs/nginx-ha-ssl-proxy/README.md) for the `use_x_forwarded_for` and `trusted_proxies` ranges a proxied setup needed.
 7. **Collect logs for a report.** The add-on log around the failed request, the proxy's error log for the same seconds, and the Alexa History entry are usually enough. The skill's diagnostics download captures its own configuration and the read-only Music Assistant channel checks. Logs can be shared privately on Discord (timlaing) if you prefer.
+
+#### Cloudflare or another CDN/WAF in front
+
+**Cloudflare (or another CDN/WAF) between Amazon and your skill or stream host** can break audio while the skill itself stays healthy. Two reports of this failure class are in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40). Work through these in order:
+
+1. **Edge caching of `.mp3`.** Music Assistant's `/flow/<…>/<player>.mp3` URLs match Cloudflare's default cacheable extension list, so the edge can cache a live one-shot stream and replay a stale copy. Fetch a flow URL and read the `cf-cache-status` response header: it must be `DYNAMIC` or `MISS`, never `HIT`.
+2. **Bot Fight Mode, security level and WAF rules.** These can answer Amazon's server-side fetches with an HTML/JS challenge (HTTP 403 or 503) instead of audio. The Echo cannot execute the challenge, and the failure looks identical to `MEDIA_ERROR_SERVICE_UNAVAILABLE` at offset 0.
+3. **Certificate type.** With a Cloudflare edge certificate, the skill must use the **Trusted sub-domain** (wildcard) certificate option in **Skill setup**; the plain **Trusted** CA option left the simulator unable to reach the skill in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40). Re-deploy with **Review settings → Deploy approved settings** after changing it.
+
+**Bypass recipe.** Grey-cloud (set to DNS-only) the stream host so audio traffic bypasses the edge, or exclude `/flow/` from the cache and challenge rules. On the one affected setup that kept Cloudflare, the wildcard certificate option plus Cloudflare Tunnel → Nginx Proxy Manager worked; another reporter fixed playback by dropping Cloudflare Tunnels for DuckDNS.

@@ -86,3 +86,12 @@ Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to pr
 5. `/flow/`, `/pluginsource/`, `/source/`, `/announcement/` and `/imageproxy/` must each preserve their full path to port **8097**; a location that strips a prefix breaks audio while the skill endpoint stays healthy.
 6. If requests cross a reverse proxy, Home Assistant must trust its `X-Forwarded-For` or proxied requests are rejected. See the [NGINX Home Assistant SSL proxy example](https://github.com/timlaing/music-assistant-alexa-api/tree/main/docs/nginx-ha-ssl-proxy) for the ranges one setup needed.
 7. Collect the add-on log around the failed request, the proxy's error log for the same seconds, and the Alexa History entry. The skill's diagnostics download adds its own configuration and the read-only Music Assistant channel checks. Logs can be shared privately on Discord (timlaing).
+
+### Cloudflare or another CDN/WAF in front
+
+**Cloudflare (or another CDN/WAF) between Amazon and the skill or stream host** breaks audio while the skill itself stays healthy; two reports are in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40).
+
+1. **Edge caching of `.mp3`.** Music Assistant's `/flow/<…>/<player>.mp3` URLs match Cloudflare's default cacheable extension list, so the edge can cache a live one-shot stream and replay a stale copy. Fetch a flow URL and read the `cf-cache-status` response header: it must be `DYNAMIC` or `MISS`, never `HIT`.
+2. **Bot Fight Mode, security level and WAF rules.** These can answer Amazon's server-side fetches with an HTML/JS challenge (HTTP 403 or 503) instead of audio. The Echo cannot execute the challenge, and the failure looks identical to `MEDIA_ERROR_SERVICE_UNAVAILABLE` at offset 0.
+3. **Certificate type.** With a Cloudflare edge certificate, the skill must use the **wildcard / sub-domain** certificate option in the Alexa Developer Console; the "trusted CA" option left the simulator unable to reach the skill in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40). The add-on's **Skill setup** maps this to **Trusted sub-domain**.
+4. **Bypass recipe.** Grey-cloud (set to DNS-only) the stream host so audio traffic bypasses the edge, or exclude `/flow/` from the cache and challenge rules. In the #40 worked examples, the wildcard certificate option with Cloudflare Tunnel → Nginx Proxy Manager worked, and dropping Cloudflare Tunnels for DuckDNS restored playback on another setup.
