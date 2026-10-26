@@ -1,5 +1,20 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.7
+
+- The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.5.0` (cosign-signed). **Upgrading changes the invocation name in every locale to `music assistant`** — relearn the launch phrase after deploying, and redeploy from **Skill setup → Review settings → Deploy approved settings** if the deployed model still uses an older name (skill issue #71). The status page gains an **Invocation name** check (V12) that compares the deployed name against Music Assistant's start command for the configured locale.
+- Spoken music selection and queue commands: ask for a song, artist, album, playlist, radio station or favourites; queue, shuffle, insert next and favourite the current track; and hear what is playing, next and previous (skill PR #38). Requires the Music Assistant control API URL and token; `en-US` only, other locales unchanged.
+- Playback position: the add-on serves `GET /alexa/playback-state?player_id=…` behind the API credentials, reporting where each Echo really is so Music Assistant's Alexa player no longer drifts ahead of the device with every voice command (skill PR #38). Pairs with Music Assistant server change music-assistant/server#7143.
+- Only requests from the deployed skill are accepted: the endpoint rejects correctly-signed requests from any other Alexa skill with the same endpoint, and fails closed until a deployment has been verified (skill PR #36).
+- Package verification accepts Amazon skill exports that omit the optional `skill-package/` wrapper (skill PR #37).
+- Give each Echo the stream pushed for its own player: with several Echos on separate queues, stale-stream recovery and the APL metadata refresh no longer pick up another player's stream (skill PR #41, fixes skill issue #33).
+- Choose the Music Assistant player from a list on the Devices page: a dropdown of Music Assistant's own players labelled by display name, with validation of saved ids and free text as a fallback when Music Assistant is unreachable (skill PR #42).
+- A diagnostics download and read-only Music Assistant channel verification (checks V1–V11) are available from the status page for the "skill answers but the Echo stays silent" reports (#40, #71).
+- Redesigned setup UI: a four-step wizard with global navigation and eight views on a shared page shell (skill PRs #32, #34). The public skill endpoint is now collected on **Application settings**, before the step that displays the Amazon callback URL derived from it (skill PR #39).
+- Consistent field styling across setup and simulator pages, HTTP response statuses in the Invocations tables, and Echo playback state updated from accepted device callbacks (skill PR #40).
+- The Stream host HEAD check treats HTTP 405 as reachable for Home Assistant roots that only accept GET.
+- Troubleshooting documentation: the Alexa locale must match the locale registered to the Echo devices, the Amazon callback URL follows the public skill endpoint, the reverse-proxy `trusted_proxies` ranges one setup needed, and an ordered "skill answers but the Echo stays silent" sequence including the invocation-name failure class (#72, #76).
+
 ## 1.3.7-beta.5
 
 - **Beta — for testing only.** Update the bundled skill to the cosign-signed `v1.5.0-beta.3` image.
