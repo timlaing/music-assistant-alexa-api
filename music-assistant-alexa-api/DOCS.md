@@ -77,6 +77,18 @@ Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to pr
 
 ## Troubleshooting
 
+### Which failure is this?
+
+[#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40) covered three separate faults with near-identical symptoms. Match yours before working the sequence below:
+
+| What you see                                                                                                              | Failure class                                                                                                                                         | What to do                                                                                       |
+| ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Step 4 or the deployment fails with **"Amazon's exported package differs from the approved deployment"**                  | Package fingerprint mismatch: a bundled locale model without the custom slot list, differing icon URIs, or Amazon's optional `skill-package/` wrapper | Fixed by **1.3.7-beta.3** — update the add-on. The error now names the differing file and field. |
+| Playback works, then fails after an idle period; the add-on log shows **`Audio URL returned HTTP 404`**                   | Stale one-shot `/flow/` URL                                                                                                                           | Fixed by **1.3.6** — update. If it still fails afterwards, work step 3 below.                    |
+| The skill logs HTTP 200, Alexa fails at **`offsetInMilliseconds: 0`**, every status check is green and the log has no 404 | The Echo's fetch path: proxy, DNS or a CDN/WAF in front                                                                                               | Work the steps below, then [Isolate the broken hop](#isolate-the-broken-hop).                    |
+
+**Every status-page check runs from the add-on's own network view.** It proves that the add-on, its proxy and Music Assistant are wired together — it cannot prove the path an Echo takes. Only a test on a real device does, which is why all the checks can pass while playback still fails. Checks that report **Unknown** for the Music Assistant API need `ma_api_url` and `ma_api_token`, which live in the add-on's **Configuration** tab rather than in the web Setup.
+
 **The skill answers but the Echo stays silent.** Music Assistant shows the track as playing, the add-on logs HTTP 200 for the `PlayAudio` request, and Alexa still fails with `MEDIA_ERROR_SERVICE_UNAVAILABLE` and `offsetInMilliseconds: 0`. Work through these in order:
 
 1. Open the Alexa app → **Alexa Privacy → Review Alexa History** and find the invocation. A request that never appears there never reached the add-on — either the deployed invocation name no longer matches what Music Assistant says (step 2), or it was lost in DNS, TLS or proxy routing rather than at playback.
@@ -88,6 +100,16 @@ Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to pr
 7. If requests cross a reverse proxy, Home Assistant must trust its `X-Forwarded-For` or proxied requests are rejected. See the [NGINX Home Assistant SSL proxy example](https://github.com/timlaing/music-assistant-alexa-api/tree/main/docs/nginx-ha-ssl-proxy) for the ranges one setup needed.
 8. Collect the add-on log around the failed request, the proxy's error log for the same seconds, and the Alexa History entry. The skill's diagnostics download adds its own configuration and the read-only Music Assistant channel checks. Logs can be shared privately on Discord (timlaing).
 
+### Isolate the broken hop
+
+When the sequence above has ruled everything out, three tests separate the remaining causes. All three come from closing [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40), where a correct proxy configuration and green checks hid a fault on the device path:
+
+1. **Does the Echo's request reach you at all?** Start a playback that fails and watch the proxy access log at that moment (the NGINX add-on writes it to its add-on log; add `access_log /dev/stdout;` to the stream location if you don't see stream requests). No `GET /flow/…` line means the Echo never reached your proxy — the fault is DNS, hairpin/NAT-loopback or a CDN challenge in front (step 5 and the Cloudflare section below). A `200` line means it arrived and was served, so the problem is in the response itself. An error status points at the proxy → Music Assistant hop (step 6).
+2. **Fetch the failing URL from outside your LAN.** Copy the `/flow/…` URL from the log and, on mobile data rather than Wi-Fi, run `curl -N -o /dev/null -w '%{http_code} %{size_download}\n' '<flow-url>'`. Bytes should download and `size_download` should keep climbing. A headers-only `200` with a stalled transfer means something between the origin and the internet is buffering or challenging the stream.
+3. **Test hairpin/NAT-loopback explicitly.** From a LAN device, resolve the public hostname to your home public IP instead: `curl --resolve <host>:443:<home-public-ip> https://<host>/<path>`. Many routers do not loop LAN→WAN→LAN traffic back — exactly the gap that a local DNS rewrite (step 5) hides from every other check.
+
+**Fastest confirmation:** if test 1 shows no line from the Echo, point the Echo at the resolver that rewrites the hostname to your LAN address (or add a local DNS/host entry for it) and retry. Playback starting immediately proves the diagnosis with no further digging.
+
 ### Cloudflare or another CDN/WAF in front
 
 **Cloudflare (or another CDN/WAF) between Amazon and the skill or stream host** breaks audio while the skill itself stays healthy; two reports are in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40).
@@ -96,3 +118,13 @@ Stable 1.3.0 keeps the legacy Supervisor schema with migration-only labels to pr
 2. **Bot Fight Mode, security level and WAF rules.** These can answer Amazon's server-side fetches with an HTML/JS challenge (HTTP 403 or 503) instead of audio. The Echo cannot execute the challenge, and the failure looks identical to `MEDIA_ERROR_SERVICE_UNAVAILABLE` at offset 0.
 3. **Certificate type.** With a Cloudflare edge certificate, the skill must use the **wildcard / sub-domain** certificate option in the Alexa Developer Console; the "trusted CA" option left the simulator unable to reach the skill in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40). The add-on's **Skill setup** maps this to **Trusted sub-domain**.
 4. **Bypass recipe.** Grey-cloud (set to DNS-only) the stream host so audio traffic bypasses the edge, or exclude `/flow/` from the cache and challenge rules. In the #40 worked examples, the wildcard certificate option with Cloudflare Tunnel → Nginx Proxy Manager worked, and dropping Cloudflare Tunnels for DuckDNS restored playback on another setup.
+
+#### Cloudflare Tunnel specifics
+
+A tunnel changes both the failure modes and the fixes:
+
+- **Tunneled hostnames are always proxied.** Cloudflare Tunnel requires the DNS record to be orange-clouded, so the grey-cloud bypass above is not available for that hostname. Use exclusions instead: a Cache Rule that bypasses cache for `/flow/`, `/pluginsource/`, `/source/`, `/announcement/` and `/imageproxy/`, and a WAF skip rule (or Bot Fight Mode off) for the skill and stream hostnames.
+- **A tunnel removes port forwarding and NAT-loopback from the path.** Alexa's POSTs and the Echo's audio fetch reach the Cloudflare edge, and `cloudflared` dials out to your network — so a setup whose router cannot hairpin LAN→WAN→LAN traffic (step 5) works over a tunnel even though direct port forwarding does not. Moving the stream host onto a tunnel is one of the fixes for that failure.
+- **Route the paths with a proxy, not with `cloudflared` alone.** `cloudflared` ingress rules match a path but never rewrite it, so the `/ma-alexa-skill/` prefix cannot be stripped on the way to the add-on's root routes — pointing a tunnel straight at the add-on serves that prefix to a 404. Keep the tunnel in front of Nginx Proxy Manager (or the NGINX Home Assistant SSL proxy) and reuse the location table above; the end-to-end worked example in [#40](https://github.com/timlaing/music-assistant-alexa-api/issues/40) used exactly that shape. See the repository's [`docs/cloudflare-tunnel`](https://github.com/timlaing/music-assistant-alexa-api/tree/main/docs/cloudflare-tunnel) example for a worked configuration and settings checklist.
+- **Certificate type:** with Cloudflare's edge certificate, select **Trusted sub-domain** in **Skill setup** (item 3 above).
+- **Diagnose on both sides:** the `cloudflared` access log shows whether the edge delivered the request and what the origin answered, while the proxy log shows whether the Echo's `GET /flow/…` arrived ([test 1 above](#isolate-the-broken-hop)). Together they locate the break in one pass.
