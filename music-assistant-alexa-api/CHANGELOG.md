@@ -1,5 +1,13 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.8
+
+- The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.6.0` (cosign-signed). The status page gains an **MA to Amazon channel** check (V13) that catches a dead Music Assistant → Amazon session: MA pushes the stream to the skill but its Alexa provider can no longer ask Amazon to start playback, so MA-initiated play and volume control silently fail while every other check stays green (#86). V13 correlates the pushed stream with the Echo's own playback reports — a fresh push that its player never reports as current becomes a warning pointing at re-authenticating Music Assistant's Alexa provider with Amazon, which is separate from this add-on's **Connect to Amazon** step. An idle Echo does not warn: a stale or absent push reports Unknown instead.
+- The **Music Assistant API URL** and **access token** now have their own **Music Assistant control API** section on **Application settings** instead of sitting behind **Advanced connection settings**, with helper text naming what they unlock: the Alexa provider, Now playing and Alexa players status checks, the player picker on Devices, voice pause/resume/stop routed to Music Assistant, and stale one-shot stream recovery (skill PR #55, fixes #87).
+- The V1–V12 Music Assistant channel checks probe the configured skill endpoint with its path prefix, so a prefixed deployment is no longer judged by the bare host where another service (for example the Music Assistant stream server) answers (skill PRs #51, #52, fixes skill issues #47 and #49).
+- The Current audio check verifies real bytes and HTTP 405 counts as reachable for the Stream host check on Home Assistant roots that only accept GET (skill PR #50, fixes skill issue #48).
+- Localized responses keep empty messages empty instead of substituting a fallback (skill PR #57).
+
 ## 1.3.7
 
 - The bundled skill moves to `ghcr.io/timlaing/music-assistant-skill:v1.5.0` (cosign-signed). **Upgrading changes the invocation name in every locale to `music assistant`** — relearn the launch phrase after deploying, and redeploy from **Skill setup → Review settings → Deploy approved settings** if the deployed model still uses an older name (skill issue #71). The status page gains an **Invocation name** check (V12) that compares the deployed name against Music Assistant's start command for the configured locale.
