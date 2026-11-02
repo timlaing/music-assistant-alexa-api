@@ -1,0 +1,18 @@
+version: 2
+updates:
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "04:00"
+    labels:
+      - "dependencies"
+      - "docker"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+      time: "04:00"
+    labels:
+      - "dependencies"
+      - "github-actions"
