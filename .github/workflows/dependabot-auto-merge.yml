@@ -21,7 +21,7 @@ jobs:
       # This workflow reads metadata only; never check out or execute PR code.
       - name: Get Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v3
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3
         with:
           github-token: ${{ github.token }}
       - name: Enable protected auto-merge for patch and minor updates
