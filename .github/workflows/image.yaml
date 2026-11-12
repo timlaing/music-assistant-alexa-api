@@ -48,7 +48,7 @@ jobs:
       # before it can reach the store.
       - name: Install Cosign for PR base verification
         if: ${{ !inputs.publish }}
-        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+        uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
         with:
           cosign-release: v3.0.6
       - name: Verify base image for PR build
