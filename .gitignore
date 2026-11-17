@@ -12,3 +12,6 @@ music-assistant-alexa-api/skill-api
 
 # Local implementation planning notes are not repository documentation.
 PERSONAL_SKILL_DEPLOYMENT_PLAN.md
+
+# Local OpenCode configuration and generated files
+.opencode/
