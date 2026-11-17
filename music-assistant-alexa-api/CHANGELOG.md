@@ -1,5 +1,12 @@
 <!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
+## 1.3.11
+
+- Add `/single/` audio-stream routing to the example NGINX Home Assistant SSL proxy configuration, addressing HTTP 404 responses for Music Assistant's single-player stream URLs (#100). Existing proxy installations must apply the updated example configuration; updating the add-on does not change your proxy configuration automatically.
+- Document the Nabu Casa public-endpoint limitation and the supported public skill/audio routing setup (#93).
+- Maintenance: improve CodeRabbit review and Dependabot auto-merge automation, pin the Dependabot metadata action, and update SonarQube scan and cosign installer actions (#94–#99).
+- The bundled skill remains at `v1.6.10`; no skill redeployment is required for this release.
+
 ## 1.3.10
 
 - Update the bundled skill to the cosign-signed `v1.6.10` image.
