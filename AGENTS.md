@@ -36,7 +36,12 @@
 
 ## Release flow
 
-- PRs only, squash-merge, never push to `main`. If `gh pr merge` reports
+- Use PRs and squash-merges by default. A direct, non-force push to `main`
+  is permitted only when the user explicitly approves that push and its scope.
+  Use the user's existing GitHub bypass permission where required; do not weaken
+  branch protections, include unrelated changes, or infer approval from a general
+  request to implement a feature or create a release.
+- If `gh pr merge` reports
   `BLOCKED` with checks green:
   `gh api -X PUT repos/timlaing/music-assistant-alexa-api/pulls/N/merge -f merge_method=squash`.
 - CI: add-on linter, runtime container tests on amd64 + aarch64 (which
