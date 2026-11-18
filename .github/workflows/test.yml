@@ -1,71 +1,71 @@
 name: Test
-'on':
+"on":
   push:
     branches:
-    - main
+      - main
   pull_request:
     branches:
-    - main
+      - main
 jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        persist-credentials: false
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
-    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
-      with:
-        python-version: '3.14'
-        cache: pip
-        cache-dependency-path: requirements-test.txt
-    - name: Install dependencies
-      run: |
-        python -m venv .venv
-        .venv/bin/pip install --upgrade pip
-        .venv/bin/pip install -r requirements-test.txt
-    - name: Run tests with coverage
-      run: |
-        .venv/bin/python -m pytest tests/ \
-          --cov=tests \
-          --cov=scripts \
-          --cov-branch \
-          --cov-report=term-missing \
-          --cov-report=xml:coverage.xml
-    - name: Record coverage revision
-      run: git rev-parse HEAD > coverage-revision.txt
-    - name: Upload coverage report
-      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-      with:
-        name: coverage-report
-        path: |
-          coverage.xml
-          coverage-revision.txt
-        if-no-files-found: error
-        retention-days: 7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.14"
+          cache: pip
+          cache-dependency-path: requirements-test.txt
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/pip install --upgrade pip
+          .venv/bin/pip install -r requirements-test.txt
+      - name: Run tests with coverage
+        run: |
+          .venv/bin/python -m pytest tests/ \
+            --cov=tests \
+            --cov=scripts \
+            --cov-branch \
+            --cov-report=term-missing \
+            --cov-report=xml:coverage.xml
+      - name: Record coverage revision
+        run: git rev-parse HEAD > coverage-revision.txt
+      - name: Upload coverage report
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: coverage-report
+          path: |
+            coverage.xml
+            coverage-revision.txt
+          if-no-files-found: error
+          retention-days: 7
   validation-result:
     name: Validate test
     needs:
-    - test
-    - workflow-tooling
+      - test
+      - workflow-tooling
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions: {}
     steps:
-    - name: Require every validation job to pass
-      env:
-        RESULTS: ${{ toJSON(needs) }}
-      run: |
-        python3 -I - <<'PY'
-        import json, os
-        results = json.loads(os.environ['RESULTS'])
-        failed = [name for name, job in results.items() if job['result'] != 'success']
-        if failed:
-            raise SystemExit('Validation incomplete: ' + ', '.join(failed))
-        PY
+      - name: Require every validation job to pass
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 -I - <<'PY'
+          import json, os
+          results = json.loads(os.environ['RESULTS'])
+          failed = [name for name, job in results.items() if job['result'] != 'success']
+          if failed:
+              raise SystemExit('Validation incomplete: ' + ', '.join(failed))
+          PY
   workflow-tooling:
     name: Workflow tooling coverage
     runs-on: ubuntu-latest
@@ -73,26 +73,26 @@ jobs:
     permissions:
       contents: read
     steps:
-    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      with:
-        ref: ${{ github.event.pull_request.head.sha || github.sha }}
-        persist-credentials: false
-    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
-      with:
-        python-version: '3.14'
-    - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
-      with:
-        node-version: '26'
-    - name: Measure policy and coordinator coverage
-      run: |
-        python3 -m pip install --only-binary=:all: PyYAML==6.0.3 coverage==7.11.0
-        mkdir -p coverage-workflow
-        python3 -m coverage run --branch --source=.github/scripts -m unittest discover -s .github/scripts
-        python3 -m coverage xml -o coverage-workflow/python.xml
-        node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage-workflow/javascript.lcov .github/scripts/quality-review.test.cjs
-    - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
-      with:
-        name: workflow-tooling-coverage
-        path: coverage-workflow/
-        if-no-files-found: error
-        retention-days: 7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: "3.14"
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: "26"
+      - name: Measure policy and coordinator coverage
+        run: |
+          python3 -m pip install --only-binary=:all: PyYAML==6.0.3 coverage==7.11.0
+          mkdir -p coverage-workflow
+          python3 -m coverage run --branch --source=.github/scripts -m unittest discover -s .github/scripts
+          python3 -m coverage xml -o coverage-workflow/python.xml
+          node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage-workflow/javascript.lcov .github/scripts/*.test.cjs
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: workflow-tooling-coverage
+          path: coverage-workflow/
+          if-no-files-found: error
+          retention-days: 7
