@@ -1,16 +1,13 @@
 name: Builder
-
 permissions:
   contents: read
-
-on:
+"on":
   push:
     branches:
       - main
   pull_request:
     branches:
       - main
-
 jobs:
   init:
     runs-on: ubuntu-latest
@@ -22,9 +19,8 @@ jobs:
       - name: Check out the repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0
+          fetch-depth: "0"
           persist-credentials: false
-
       - name: Select changed add-on
         id: changed_addons
         env:
@@ -47,22 +43,24 @@ jobs:
           echo 'addons=["music-assistant-alexa-api"]' >> "$GITHUB_OUTPUT"
   runtime:
     needs: init
-    if: needs.init.outputs.changed == 'true'
+    if: github.event_name == 'pull_request' || needs.init.outputs.changed == 'true'
     uses: ./.github/workflows/runtime.yaml
     permissions:
       contents: read
-
   build:
-    needs: [init, runtime]
-    if: needs.init.outputs.changed == 'true' && github.event_name == 'pull_request'
+    needs:
+      - init
+      - runtime
+    if: github.event_name == 'pull_request'
     uses: ./.github/workflows/image.yaml
     permissions:
       contents: read
     with:
       publish: false
-
   publish:
-    needs: [init, runtime]
+    needs:
+      - init
+      - runtime
     if: needs.init.outputs.changed == 'true' && github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: ./.github/workflows/image.yaml
     permissions:
@@ -71,3 +69,25 @@ jobs:
       id-token: write
     with:
       publish: true
+  validation-result:
+    name: Validate builder
+    needs:
+      - init
+      - runtime
+      - build
+    if: always() && github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require every validation job to pass
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 -I - <<'PY'
+          import json, os
+          results = json.loads(os.environ['RESULTS'])
+          failed = [name for name, job in results.items() if job['result'] != 'success']
+          if failed:
+              raise SystemExit('Validation incomplete: ' + ', '.join(failed))
+          PY

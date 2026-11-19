@@ -1,18 +1,26 @@
 version: 2
 updates:
-  - package-ecosystem: "docker"
-    directory: "/"
+  - package-ecosystem: docker
+    directory: /
     schedule:
-      interval: "daily"
-      time: "04:00"
+      interval: daily
+      time: 04:00
     labels:
-      - "dependencies"
-      - "docker"
-  - package-ecosystem: "github-actions"
-    directory: "/"
+      - dependencies
+      - docker
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "daily"
-      time: "04:00"
+      interval: daily
+      time: 04:00
     labels:
-      - "dependencies"
-      - "github-actions"
+      - dependencies
+      - github-actions
+  - package-ecosystem: devcontainers
+    directory: /
+    schedule:
+      interval: daily
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: daily

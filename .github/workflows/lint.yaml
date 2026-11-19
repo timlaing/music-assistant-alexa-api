@@ -55,3 +55,25 @@ jobs:
           python3 scripts/allow_digest_images.py
           docker build -t addon-linter .addon-linter/src
           docker run --rm -v "$PWD:/github/workspace:ro" -e INPUT_PATH="/github/workspace/$ADDON_PATH" -e INPUT_COMMUNITY=false addon-linter
+
+  validation-result:
+    name: Validate lint
+    needs:
+      - find
+      - lint
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Require every validation job to pass
+        env:
+          RESULTS: ${{ toJSON(needs) }}
+        run: |
+          python3 -I - <<'PY'
+          import json, os
+          results = json.loads(os.environ['RESULTS'])
+          failed = [name for name, job in results.items() if job['result'] != 'success']
+          if failed:
+              raise SystemExit('Validation incomplete: ' + ', '.join(failed))
+          PY
